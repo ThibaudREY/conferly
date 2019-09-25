@@ -1,4 +1,4 @@
-@import "../../../node_modules/react-loader-spinner/dist/loader/css/react-spinner-loader.css";
+@import "../../../../node_modules/react-loader-spinner/dist/loader/css/react-spinner-loader.css";
 
 .controls {
     width: 50vw;
