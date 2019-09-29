@@ -7,9 +7,18 @@
     "@types/node": "12.7.5",
     "@types/react": "16.9.2",
     "@types/react-dom": "16.9.0",
+    "@types/shortid": "0.0.29",
+    "loaders.css": "^0.1.2",
     "react": "^16.9.0",
     "react-dom": "^16.9.0",
+    "react-loader-spinner": "^3.1.4",
+    "react-loaders": "^3.0.1",
     "react-scripts": "^3.1.2",
+    "react-share": "^3.0.1",
+    "react-spinners": "^0.6.1",
+    "shortid": "^2.2.15",
+    "simple-peer": "^9.6.0",
+    "socket.io-client": "^2.3.0",
     "typescript": "3.6.3"
   },
   "scripts": {
@@ -32,5 +41,12 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "@types/react-share": "^3.0.1",
+    "@types/simple-peer": "^6.1.6",
+    "@types/socket.io-client": "^1.4.32",
+    "node-sass": "^4.12.0",
+    "sass-loader": "^8.0.0"
   }
 }

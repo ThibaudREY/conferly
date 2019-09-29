@@ -1,0 +1,36 @@
+.background {
+    position: fixed;
+    top: 0;
+    left: 0;
+    background: no-repeat fixed;
+    width: 100vw;
+}
+
+.logo {
+    z-index: 999;
+    position: absolute;
+    top: -10%;
+    left: -5%;
+    transform: scale(0.7);
+}
+
+.speech {
+    top: 15vh;
+    position: fixed;
+    width: 40vw;
+    left: 55vw;
+    color: #EFEEF3;
+    z-index: 1000;
+    padding: 3vw;
+    line-height: 1.2;
+    font-size: 1.2em;
+}
+.screen {
+    background-color: rgba(70, 75, 80, 0.5);
+    top: 15vh;
+    position: fixed;
+    height: 80vh;
+    width: 40vw;
+    left: 55vw;
+    border-radius: 2vh;
+}
