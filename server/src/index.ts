@@ -1,5 +1,7 @@
-import { app } from "./server";
+import { SignalingServer } from "./server";
 
-app.listen(9000, () => {
-    `now listenin on port 9000`;
-});
+import "reflect-metadata";
+
+const PORT = process.env.PORT || 9000;
+
+new SignalingServer(PORT);
