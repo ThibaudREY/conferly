@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import './index.scss';
 
 interface ButtonProps {
-    onClick: Function
+    onClick?: Function
     text: string
 }
 
@@ -12,7 +12,7 @@ export default class Button extends Component<ButtonProps, {}> {
 
         return (
             <div id="container">
-                <button className="learn-more" onClick={() => this.props.onClick()}>
+                <button className="learn-more" onClick={() => {if (this.props.onClick) this.props.onClick()}}>
                     <div className="circle">
                         <span className="icon arrow"/>
                     </div>
