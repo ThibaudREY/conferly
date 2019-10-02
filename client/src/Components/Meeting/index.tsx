@@ -4,7 +4,7 @@ import DIContainer from '../../ioc';
 import SimplePeer from 'simple-peer';
 import { Subscription } from 'rxjs';
 import update from 'react-addons-update';
-import StreamManagerService from '../../Services/StreamManagerService';
+import StreamManagerService from '../../Services/Manager/StreamManagerService';
 
 interface MeetingProps {
     match: any
