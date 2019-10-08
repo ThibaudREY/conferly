@@ -1,12 +1,12 @@
-import JoinRequest         from '../Models/join-request.model';
-import Conference          from '../Models/conference.model';
-import uid                 from 'uid-safe';
-import Peer                from 'simple-peer';
-import io                  from 'socket.io-client';
-import ClientOffer         from '../Models/client-offer.model';
-import SimplePeer          from 'simple-peer';
-import JoinAcknoledgement  from '../Models/join-acknoledgement.model';
-import { injectable }      from 'inversify';
+import JoinRequest from '../Models/join-request.model';
+import Conference from '../Models/conference.model';
+import uid from 'uid-safe';
+import Peer from 'simple-peer';
+import io from 'socket.io-client';
+import ClientOffer from '../Models/client-offer.model';
+import SimplePeer from 'simple-peer';
+import JoinAcknoledgement from '../Models/join-acknoledgement.model';
+import { injectable } from 'inversify';
 import { BehaviorSubject } from 'rxjs';
 
 export const subscriber = new BehaviorSubject(new Map());
@@ -101,7 +101,7 @@ export default class PeerService {
 
         console.log('PeerId: ', this.peerId);
 
-        const conference = new Conference(this.roomId);
+        const conference = new Conference(this.peerId, this.roomId);
 
         if (!this.server)
             throw new Error('Server is unreachable');
@@ -238,7 +238,7 @@ export default class PeerService {
                     this.updateObservable();
                     return set
                 })
-            )
+        )
         )
     }
 
