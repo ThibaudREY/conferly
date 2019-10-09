@@ -1,10 +1,11 @@
 import "reflect-metadata";
-import { Service } from "typedi";
-import Conference from "../models/conference.model";
-import { Socket } from "socket.io";
-import JoinRequest from "../models/join-request.model";
+import { Service }        from "typedi";
+import Conference         from "../models/conference.model";
+import { Socket }         from "socket.io";
+import JoinRequest        from "../models/join-request.model";
 import JoinAcknoledgement from "../models/join-ack.model";
 import SimplePeer = require("simple-peer");
+import { logger }         from './logger.service';
 
 type Peer = { [index: string]: string }
 
@@ -22,8 +23,8 @@ export default class SignalingService {
 
     /**
      * Initiator's room creation
-     * @param {Socket} socket 
-     * @param {Conference} conf 
+     * @param {Socket} socket
+     * @param {Conference} conf
      * @returns {void}
      */
     public createRoom(socket: Socket, conf: Conference): void {
@@ -42,7 +43,7 @@ export default class SignalingService {
     /**
      * Handle join-request & offer-request step
      * Transit webrtc offer to initiator
-     * @param {Socket} socket 
+     * @param {Socket} socket
      * @param {JoinRequest} joinRequest
      * @returns {void}
      */
@@ -55,14 +56,15 @@ export default class SignalingService {
         } else {
             conference.peers.set(joinRequest.peerId, socket.id);
             socket.to(conference.socketInitiator.id).emit('offer-request', joinRequest);
+            logger.debug('Emitted offer-request with : ', joinRequest);
         }
     }
 
     /**
      * Handle offer-response & join-response step
      * Receive & Emit signaling data to requester
-     * @param {Socket} socket 
-     * @param {JoinRequest} joinRequest 
+     * @param {Socket} socket
+     * @param {JoinRequest} joinRequest
      * @param {SimplePeer.SignalData} signalingData
      * @returns {void}
      */
@@ -77,6 +79,7 @@ export default class SignalingService {
             const peerSocket = conference.peers.get(joinRequest.peerId);
             if (peerSocket) {
                 socket.to(peerSocket).emit('join-response', signalingData);
+                logger.debug('Emitted join-response with : ', signalingData);
             }
         }
     }
@@ -84,7 +87,7 @@ export default class SignalingService {
     /**
      * Handle join-acknoledgement & client-offer step
      * Receive and Transit webRTC offer to session initiator or a new peer
-     * @param {Socket} socket 
+     * @param {Socket} socket
      * @param {JoinAcknoledgement} joinAck
      * @param {string} emitterPeerId
      * @returns {void}
@@ -101,15 +104,15 @@ export default class SignalingService {
 
         const peers = this.getPeers(currentConference.peers);
         socket.to(dest).emit('client-offer', { offer: offer, peers }, peerId, sessionInitiator, emitterPeerId);
-
+        logger.debug('Emitted client-offer with : ', { offer: offer, peers }, peerId, sessionInitiator, emitterPeerId);
     }
 
     /**
      * Handle initiator-offer & join-response step
      * Transit to a peer, peers from the conference with their offer
-     * @param {Socket} socket 
-     * @param {any} data 
-     * @param {string} peerId 
+     * @param {Socket} socket
+     * @param {any} data
+     * @param {string} peerId
      * @param {string} roomId
      * @returns {void}
      */
@@ -124,6 +127,7 @@ export default class SignalingService {
             const peerSocket = currentConference.peers.get(set[0]);
             if (peerSocket) {
                 socket.to(peerSocket).emit('join-response', set[1], peerId);
+                logger.debug('Emitted join-request with : ', set[1], peerId)
             }
         });
 
