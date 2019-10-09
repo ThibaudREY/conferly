@@ -8,6 +8,7 @@ import SimplePeer from 'simple-peer';
 import JoinAcknoledgement from '../Models/join-acknoledgement.model';
 import { injectable } from 'inversify';
 import { BehaviorSubject } from 'rxjs';
+import { error } from './error-modal.service';
 
 export const subscriber = new BehaviorSubject(new Map());
 
@@ -76,6 +77,30 @@ export default class PeerService {
         this._peerConnections = new Map<string, Peer.Instance>();
         this.currentPeerConnection = new Peer();
         this.server = io(process.env.REACT_APP_SIGNALING_SERVER as string);
+
+        this.server.on('connect_error', () => {
+            error.next({
+                show: true,
+                message: 'Network is unreachable',
+                acknowledgable: false
+            });
+        });
+
+        this.server.on('connect', () => {
+            error.next({
+                show: false,
+                message: '',
+                acknowledgable: false
+            });
+        });
+
+        this.server.on('server-error', (message: string) => {
+            error.next({
+                message: message,
+                show: true,
+                acknowledgable: false
+            });
+        });
 
         /**
          * Peer leaves room step

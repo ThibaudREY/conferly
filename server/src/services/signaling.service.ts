@@ -6,10 +6,10 @@ import JoinRequest from "../models/join-request.model";
 import JoinAcknoledgement from "../models/join-ack.model";
 import SimplePeer = require("simple-peer");
 import { logger } from './logger.service';
-import SocketJoinException from "../exceptions/socket-join.exception";
-import RoomAlreadyExistException from "../exceptions/room-exist.exception";
-import RoomNotFoundException from "../exceptions/room-not-found.exception";
-import PeerNotFoundException from "../exceptions/peer-not-found.exception";
+import SocketJoinException from '../exceptions/socket-join.exception';
+import RoomAlreadyExistException from '../exceptions/room-exist.exception';
+import RoomNotFoundException from '../exceptions/room-not-found.exception';
+import PeerNotFoundException from '../exceptions/peer-not-found.exception';
 
 type Peer = { [index: string]: string }
 
@@ -39,7 +39,7 @@ export default class SignalingService {
         if (!exist) {
             const currentSocket = socket.join(conf.roomId, (err: any) => {
                 if (err) {
-                    socket.to(socket.id).emit('server-error', `Error in creating room: ${err}`);
+                    socket.emit('server-error', `Error in creating room: ${err}`);
                     throw new SocketJoinException(`Error in creating room: ${err}`);
                 }
             });
@@ -50,7 +50,7 @@ export default class SignalingService {
             conference.peers.set(conference.initiatorPeerId, conference.socketInitiator.id);
 
         } else {
-            socket.to(socket.id).emit('server-error', `Error room already exist with id: ${conf.roomId}`);
+            socket.emit('server-error', `Error room already exist with id: ${conf.roomId}`);
             throw new RoomAlreadyExistException(`Error room already exist with id: ${conf.roomId}`);
         }
     }
@@ -68,7 +68,7 @@ export default class SignalingService {
         const conference = this.conferences.get(joinRequest.roomId);
 
         if (!conference) {
-            socket.to(socket.id).emit('server-error', `Error room not found with id: ${joinRequest.roomId}`);
+            socket.emit('server-error', `Error room not found with id: ${joinRequest.roomId}`);
             throw new RoomNotFoundException(`Error room not found with id: ${joinRequest.roomId}`);
         } else {
             (socket as any).roomId = joinRequest.roomId;
