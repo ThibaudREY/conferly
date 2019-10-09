@@ -16,7 +16,7 @@ export default class PeerService {
 
     static OPEN_CNTS_AS_INIT: string = 'OPEN_CNTS_AS_INIT___';
 
-    private readonly _peerConnections: Map<string, Peer.Instance>;
+    private _peerConnections: Map<string, Peer.Instance>;
     private signalingData: any;
     private peers: { [key: string]: string } = {};
     private peerId: string = '';
@@ -76,6 +76,11 @@ export default class PeerService {
         this._peerConnections = new Map<string, Peer.Instance>();
         this.currentPeerConnection = new Peer();
         this.server = io(process.env.REACT_APP_SIGNALING_SERVER as string);
+
+        /**
+         * Peer leaves room step
+         */
+        this.server.on('leaving', (peerId: string) => this.onLeaving(peerId));
 
         /**
          * Step 2bis
@@ -341,6 +346,20 @@ export default class PeerService {
     }
 
     /**
+     * Updates peer list when peer leaves
+     * @param peerId
+     */
+    private onLeaving(peerId: string) {
+        const pc = new Map<string, SimplePeer.Instance>();
+        for (let entry of this.peerConnections.entries()) {
+            if (entry[0] !== peerId)
+                pc.set(entry[0], entry[1]);
+        }
+        this.peerConnections = pc;
+        this.updateObservable();
+    }
+
+    /**
      * Updates the subject value for subscribed consumers
      */
     private updateObservable() {
@@ -349,5 +368,9 @@ export default class PeerService {
 
     get peerConnections(): Map<string, SimplePeer.Instance> {
         return this._peerConnections;
+    }
+
+    set peerConnections(value: Map<string, SimplePeer.Instance>) {
+        this._peerConnections = value;
     }
 }

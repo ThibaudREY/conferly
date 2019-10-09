@@ -176,29 +176,25 @@ export default class SignalingService {
                 throw new Error('Room doesnt exist');
 
             const currentPeer = currentConference.peers.get(peerId);
-            console.log('currentPeer', currentPeer);
 
             if (!currentPeer)
                 throw new Error('Peer doesnt exist');
 
-            console.log('before peers', currentConference.peers);
             currentConference.peers.delete(peerId);
-            console.log('after peers', currentConference.peers);
 
-            console.log('conferences', this.conferences);
+            for (let entry of currentConference.peers.entries()) {
+                let peerSocket = entry[1];
+                socket.to(peerSocket).emit('leaving', peerId)
+            }
 
             if (currentConference.peers.size > 0) {
                 if (currentConference.socketInitiator.id === currentPeer) {
-                    console.log('current initiator', currentConference.socketInitiator.id);
                     const nextInitiator = (currentConference.peers.values().next().value as string);
                     currentConference.socketInitiator = io.sockets.sockets[nextInitiator];
-                    console.log('new initiator', currentConference.socketInitiator.id);
                 }
             } else {
                 this.conferences.delete(roomId);
-                console.log('conferences', this.conferences);
             }
-
         }
     }
 
