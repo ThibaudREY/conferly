@@ -75,7 +75,7 @@ export default class PeerService {
     constructor() {
         this._peerConnections = new Map<string, Peer.Instance>();
         this.currentPeerConnection = new Peer();
-        this.server = io('localhost:9000'); // TODO: Find a way to inject configuration
+        this.server = io(process.env.REACT_APP_SIGNALING_SERVER as string);
 
         /**
          * Step 2bis
