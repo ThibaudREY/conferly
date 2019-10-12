@@ -87,7 +87,7 @@ export default class SignalingService {
         const conference = this.conferences.get(joinRequest.roomId);
 
         if (!conference) {
-            throw new RoomNotFoundException(`Error room not found with id: ${joinRequest.roomId}`);
+            this.throw(new RoomNotFoundException(`Error room not found with id: ${joinRequest.roomId}`), socket);
 
         } else {
             const peerSocket = conference.peers.get(joinRequest.peerId);
@@ -96,7 +96,7 @@ export default class SignalingService {
                 socket.to(peerSocket).emit('join-response', signalingData);
                 logger.debug('Emitted join-response with : ', signalingData);
             } else {
-                throw new PeerNotFoundException(`Error peer not found with id: ${joinRequest.peerId}`);
+                this.throw(new PeerNotFoundException(`Error peer not found with id: ${joinRequest.peerId}`), socket);
             }
         }
     }
@@ -115,7 +115,7 @@ export default class SignalingService {
         const currentConference = this.conferences.get(roomId);
 
         if (!currentConference)
-            throw new RoomNotFoundException(`Error room not found with id: ${roomId}`);
+            this.throw(new RoomNotFoundException(`Error room not found with id: ${roomId}`), socket);
 
         const dest = peerId ? currentConference.peers.get(peerId) as string : currentConference.socketInitiator.id;
         const sessionInitiator = !peerId;
@@ -140,7 +140,7 @@ export default class SignalingService {
         const currentConference = this.conferences.get(roomId);
 
         if (!currentConference)
-            throw new RoomNotFoundException(`Error room not found with id: ${roomId}`);
+            this.throw(new RoomNotFoundException(`Error room not found with id: ${roomId}`), socket);
 
         Object.entries(data).forEach((set: [string, any]) => {
             const peerSocket = currentConference.peers.get(set[0]);
