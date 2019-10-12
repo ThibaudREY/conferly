@@ -40,31 +40,51 @@ export class SignalingServer {
             // STEP 1
             socket.on('create', (conf: Conference) => {
                 logger.debug('Received create with : ', conf);
-                signalingService.createRoom(socket, conf);
+                try {
+                    signalingService.createRoom(socket, conf);
+                } catch (e) {
+                    logger.error(e);
+                }
             });
 
             // STEP 2
             socket.on('join-request', (joinRequest: JoinRequest) => {
                 logger.debug('Received join-request with : ', joinRequest);
-                signalingService.onJoinRequest(socket, joinRequest);
+                try {
+                    signalingService.onJoinRequest(socket, joinRequest);
+                } catch (e) {
+                    logger.error(e);
+                }
             });
 
             // STEP 3
             socket.on('offer-response', (joinRequest: JoinRequest, signalingData: SimplePeer.SignalData) => {
                 logger.debug('Received offer-response with : ', joinRequest, signalingData);
-                signalingService.onOfferResponse(socket, joinRequest, signalingData);
+                try {
+                    signalingService.onOfferResponse(socket, joinRequest, signalingData);
+                } catch (e) {
+                    logger.error(e);
+                }
             });
 
             // STEP 4
             socket.on('join-ack', (joinAck: JoinAcknoledgement, emitterPeerId: string) => {
                 logger.debug('Received join-ack with : ', joinAck, emitterPeerId);
-                signalingService.onJoinAck(socket, joinAck, emitterPeerId);
+                try {
+                    signalingService.onJoinAck(socket, joinAck, emitterPeerId);
+                } catch (e) {
+                    logger.error(e);
+                }
             });
 
             // STEP 5
             socket.on('initiator-offers', (data: any, peerId: string, roomId: string) => {
                 logger.debug('Received initiator-offers with : ', data, peerId, roomId);
-                signalingService.onInitiatorOffers(socket, data, peerId, roomId);
+                try {
+                    signalingService.onInitiatorOffers(socket, data, peerId, roomId);
+                } catch (e) {
+                    logger.error(e);
+                }
             });
         });
     }
