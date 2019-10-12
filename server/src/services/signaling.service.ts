@@ -1,15 +1,15 @@
 import "reflect-metadata";
-import { Service } from "typedi";
-import Conference from "../models/conference.model";
-import { Socket } from "socket.io";
-import JoinRequest from "../models/join-request.model";
-import JoinAcknoledgement from "../models/join-ack.model";
+import { Service }               from "typedi";
+import Conference                from "../models/conference.model";
+import { Socket }                from "socket.io";
+import JoinRequest               from "../models/join-request.model";
+import JoinAcknoledgement        from "../models/join-ack.model";
 import SimplePeer = require("simple-peer");
-import { logger } from './logger.service';
-import SocketJoinException from "../exceptions/socket-join.exception";
-import RoomAlreadyExistException from "../exceptions/room-exist.exception";
-import RoomNotFoundException from "../exceptions/room-not-found.exception";
-import PeerNotFoundException from "../exceptions/peer-not-found.exception";
+import { logger }                from './logger.service';
+import PeerNotFoundException     from '../exceptions/peer-not-found.exception';
+import RoomNotFoundException     from '../exceptions/room-not-found.exception';
+import RoomAlreadyExistException from '../exceptions/room-exist.exception';
+import SocketJoinException       from '../exceptions/socket-join.exception';
 
 type Peer = { [index: string]: string }
 
@@ -110,19 +110,19 @@ export default class SignalingService {
      * @returns {void}
      * @throws {RoomNotFoundException}
      */
-    public onJoinAck(socket: SocketIO.Socket, { offer, peerId, roomId }: JoinAcknoledgement, emitterPeerId: string): void {
+    public onJoinAck(socket: SocketIO.Socket, {offer, peerId, roomId}: JoinAcknoledgement, emitterPeerId: string): void {
 
         const currentConference = this.conferences.get(roomId);
 
         if (!currentConference)
-            this.throw(new RoomNotFoundException(`Error room not found with id: ${roomId}`), socket);
+            return this.throw(new RoomNotFoundException(`Error room not found with id: ${roomId}`), socket);
 
         const dest = peerId ? currentConference.peers.get(peerId) as string : currentConference.socketInitiator.id;
         const sessionInitiator = !peerId;
 
         const peers = this.getPeers(currentConference.peers);
-        socket.to(dest).emit('client-offer', { offer: offer, peers }, peerId, sessionInitiator, emitterPeerId);
-        logger.debug('Emitted client-offer with : ', { offer: offer, peers }, peerId, sessionInitiator, emitterPeerId);
+        socket.to(dest).emit('client-offer', {offer: offer, peers}, peerId, sessionInitiator, emitterPeerId);
+        logger.debug('Emitted client-offer with : ', {offer: offer, peers}, peerId, sessionInitiator, emitterPeerId);
     }
 
     /**
@@ -140,7 +140,7 @@ export default class SignalingService {
         const currentConference = this.conferences.get(roomId);
 
         if (!currentConference)
-            this.throw(new RoomNotFoundException(`Error room not found with id: ${roomId}`), socket);
+            return this.throw(new RoomNotFoundException(`Error room not found with id: ${roomId}`), socket);
 
         Object.entries(data).forEach((set: [string, any]) => {
             const peerSocket = currentConference.peers.get(set[0]);
