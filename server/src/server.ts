@@ -1,18 +1,19 @@
-import express                  from "express";
-import socketIo, { Socket }     from 'socket.io';
+import express from "express";
+import socketIo, { Socket } from 'socket.io';
 import { Server, createServer } from "http";
-import SimplePeer               from "simple-peer";
-import SignalingService         from "./services/signaling.service";
-import Container                from "typedi";
-import Conference               from "./models/conference.model";
-import JoinRequest              from "./models/join-request.model";
-import JoinAcknoledgement       from "./models/join-ack.model";
-import { logger }               from './services/logger.service';
+import SimplePeer from "simple-peer";
+import SignalingService from "./services/signaling.service";
+import Container from "typedi";
+import cors from "cors";
+import Conference from "./models/conference.model";
+import JoinRequest from "./models/join-request.model";
+import JoinAcknoledgement from "./models/join-ack.model";
+import { logger } from './services/logger.service';
 
 export class SignalingServer {
 
     private readonly _port: string | number;
-    private _app: Express.Application;
+    private _app: any;
     private _server: Server;
     private _io: SocketIO.Server;
 
@@ -25,8 +26,17 @@ export class SignalingServer {
         this._app = express();
         this._server = createServer(this._app);
         this._io = socketIo(this._server);
+        this.configuration();
         this.handlePeers();
         this.listen();
+    }
+
+    /**
+     * Set configuration on express server
+     * @returns {void}
+     */
+    private configuration(): void {
+        this._app.use(cors());
     }
 
     /**
