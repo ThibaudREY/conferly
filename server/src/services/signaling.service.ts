@@ -40,14 +40,14 @@ export default class SignalingService {
             const currentSocket = socket.join(conf.roomId, (err: any) => {
                 if (err) {
                     socket.to(socket.id).emit('server-error', `Error in creating room: ${err}`);
-                    throw new SocketJoinException(`Error in creating room: ${err}`);
+                    this.throw(new SocketJoinException(`Error in creating room: ${err}`), socket.to(socket.id));
                 }
             });
             const conference = new Conference(conf.roomId, currentSocket);
             this.conferences.set(conf.roomId, conference);
         } else {
             socket.to(socket.id).emit('server-error', `Error room already exist with id: ${conf.roomId}`);
-            throw new RoomAlreadyExistException(`Error room already exist with id: ${conf.roomId}`);
+            this.throw(new RoomAlreadyExistException(`Error room already exist with id: ${conf.roomId}`), socket.to(socket.id));
         }
     }
 
@@ -65,7 +65,7 @@ export default class SignalingService {
 
         if (!conference) {
             socket.to(socket.id).emit('server-error', `Error room not found with id: ${joinRequest.roomId}`);
-            throw new RoomNotFoundException(`Error room not found with id: ${joinRequest.roomId}`);
+            this.throw(new RoomNotFoundException(`Error room not found with id: ${joinRequest.roomId}`), socket.to(socket.id));
         } else {
             conference.peers.set(joinRequest.peerId, socket.id);
             socket.to(conference.socketInitiator.id).emit('offer-request', joinRequest);
@@ -165,5 +165,14 @@ export default class SignalingService {
         });
 
         return peersToReturn;
+    }
+
+    /**
+     * Emits the exception back to the client
+     * @param error
+     * @param socket
+     */
+    private throw(error: Error, socket: SocketIO.Socket): void {
+        socket.emit('error', error);
     }
 }
