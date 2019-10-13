@@ -96,6 +96,11 @@ export class SignalingServer {
                     logger.error(e);
                 }
             });
+
+            // DISCONNECT EVENT
+            socket.on('disconnect', () => {
+                signalingService.onDisconnect(this._io, socket);
+            });
         });
     }
 

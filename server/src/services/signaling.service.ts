@@ -43,8 +43,12 @@ export default class SignalingService {
                     throw new SocketJoinException(`Error in creating room: ${err}`);
                 }
             });
-            const conference = new Conference(conf.roomId, currentSocket);
+            (currentSocket as any).roomId = conf.roomId;
+            (currentSocket as any).peerId = conf.initiatorPeerId;
+            const conference = new Conference(conf.roomId, conf.initiatorPeerId, currentSocket);
             this.conferences.set(conf.roomId, conference);
+            conference.peers.set(conference.initiatorPeerId, conference.socketInitiator.id);
+
         } else {
             socket.emit('server-error', `Error room already exist with id: ${conf.roomId}`);
             throw new RoomAlreadyExistException(`Error room already exist with id: ${conf.roomId}`);
@@ -67,6 +71,8 @@ export default class SignalingService {
             socket.emit('server-error', `Error room not found with id: ${joinRequest.roomId}`);
             throw new RoomNotFoundException(`Error room not found with id: ${joinRequest.roomId}`);
         } else {
+            (socket as any).roomId = joinRequest.roomId;
+            (socket as any).peerId = joinRequest.peerId;
             conference.peers.set(joinRequest.peerId, socket.id);
             socket.to(conference.socketInitiator.id).emit('offer-request', joinRequest);
             logger.debug('Emitted offer-request with : ', joinRequest);
@@ -150,6 +156,46 @@ export default class SignalingService {
             }
         });
 
+    }
+
+    /**
+     * Handle peers disconnection from conference
+     * @param {SocketIO.Server} io
+     * @param {SocketIO.Socket} socket
+     * @returns {void}
+     */
+    public onDisconnect(io: SocketIO.Server, socket: SocketIO.Socket): void {
+
+        if ((socket as any).roomId && (socket as any).peerId) {
+            const roomId = (socket as any).roomId;
+            const peerId = (socket as any).peerId;
+
+            const currentConference = this.conferences.get(roomId);
+
+            if (!currentConference)
+                throw new Error('Room doesnt exist');
+
+            const currentPeer = currentConference.peers.get(peerId);
+
+            if (!currentPeer)
+                throw new Error('Peer doesnt exist');
+
+            currentConference.peers.delete(peerId);
+
+            for (let entry of currentConference.peers.entries()) {
+                let peerSocket = entry[1];
+                socket.to(peerSocket).emit('leaving', peerId)
+            }
+
+            if (currentConference.peers.size > 0) {
+                if (currentConference.socketInitiator.id === currentPeer) {
+                    const nextInitiator = (currentConference.peers.values().next().value as string);
+                    currentConference.socketInitiator = io.sockets.sockets[nextInitiator];
+                }
+            } else {
+                this.conferences.delete(roomId);
+            }
+        }
     }
 
     /**

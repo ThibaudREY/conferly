@@ -1,12 +1,12 @@
-import JoinRequest         from '../Models/join-request.model';
-import Conference          from '../Models/conference.model';
-import uid                 from 'uid-safe';
-import Peer                from 'simple-peer';
-import io                  from 'socket.io-client';
-import ClientOffer         from '../Models/client-offer.model';
-import SimplePeer          from 'simple-peer';
-import JoinAcknoledgement  from '../Models/join-acknoledgement.model';
-import { injectable }      from 'inversify';
+import JoinRequest from '../Models/join-request.model';
+import Conference from '../Models/conference.model';
+import uid from 'uid-safe';
+import Peer from 'simple-peer';
+import io from 'socket.io-client';
+import ClientOffer from '../Models/client-offer.model';
+import SimplePeer from 'simple-peer';
+import JoinAcknoledgement from '../Models/join-acknoledgement.model';
+import { injectable } from 'inversify';
 import { BehaviorSubject } from 'rxjs';
 
 export const subscriber = new BehaviorSubject(new Map());
@@ -16,7 +16,7 @@ export default class PeerService {
 
     static OPEN_CNTS_AS_INIT: string = 'OPEN_CNTS_AS_INIT___';
 
-    private readonly _peerConnections: Map<string, Peer.Instance>;
+    private _peerConnections: Map<string, Peer.Instance>;
     private signalingData: any;
     private peers: { [key: string]: string } = {};
     private peerId: string = '';
@@ -78,6 +78,11 @@ export default class PeerService {
         this.server = io(process.env.REACT_APP_SIGNALING_SERVER as string);
 
         /**
+         * Peer leaves room step
+         */
+        this.server.on('leaving', (peerId: string) => this.onLeaving(peerId));
+
+        /**
          * Step 2bis
          */
         this.server.on('offer-request', (request: JoinRequest) => this.onOfferRequest(request));
@@ -101,7 +106,7 @@ export default class PeerService {
 
         console.log('PeerId: ', this.peerId);
 
-        const conference = new Conference(this.roomId);
+        const conference = new Conference(this.peerId, this.roomId);
 
         if (!this.server)
             throw new Error('Server is unreachable');
@@ -238,7 +243,7 @@ export default class PeerService {
                     this.updateObservable();
                     return set
                 })
-            )
+        )
         )
     }
 
@@ -341,6 +346,20 @@ export default class PeerService {
     }
 
     /**
+     * Updates peer list when peer leaves
+     * @param peerId
+     */
+    private onLeaving(peerId: string) {
+        const pc = new Map<string, SimplePeer.Instance>();
+        for (let entry of this.peerConnections.entries()) {
+            if (entry[0] !== peerId)
+                pc.set(entry[0], entry[1]);
+        }
+        this.peerConnections = pc;
+        this.updateObservable();
+    }
+
+    /**
      * Updates the subject value for subscribed consumers
      */
     private updateObservable() {
@@ -349,5 +368,9 @@ export default class PeerService {
 
     get peerConnections(): Map<string, SimplePeer.Instance> {
         return this._peerConnections;
+    }
+
+    set peerConnections(value: Map<string, SimplePeer.Instance>) {
+        this._peerConnections = value;
     }
 }
