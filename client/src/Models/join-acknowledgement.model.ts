@@ -1,6 +1,6 @@
 import SimplePeer from 'simple-peer';
 
-export default class JoinAcknoledgement {
+export default class JoinAcknowledgement {
     public offer: SimplePeer.SignalData;
     public roomId: string;
     public peerId?: string;

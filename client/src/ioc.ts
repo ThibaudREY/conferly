@@ -1,4 +1,4 @@
-import PeerService from './Services/PeerService';
+import PeerService from './Services/Peer/peer.service';
 import { Container }                 from 'inversify';
 
 const DIContainer = new Container();

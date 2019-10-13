@@ -3,7 +3,7 @@ import './index.css';
 import update from 'react-addons-update';
 import Button from '../Button';
 import { withRouter, RouteComponentProps } from 'react-router-dom';
-import PeerService from '../../../Services/PeerService';
+import PeerService from '../../../Services/Peer/peer.service';
 import DIContainer from '../../../ioc';
 
 interface ControlsProps extends RouteComponentProps<any> {
