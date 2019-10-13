@@ -1,5 +1,5 @@
 import React, { Component }        from 'react';
-import PeerService, { subscriber } from '../../Services/PeerService';
+import PeerService, { subscriber } from '../../Services/Peer/peer.service';
 import DIContainer                 from '../../ioc';
 import SimplePeer                  from 'simple-peer';
 import { Subscription }            from 'rxjs';
