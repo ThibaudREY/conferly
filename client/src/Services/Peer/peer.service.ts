@@ -1,18 +1,18 @@
-import JoinRequest          from '../../Models/join-request.model';
-import Conference                from '../../Models/conference.model';
-import uid                       from 'uid-safe';
-import Peer                      from 'simple-peer';
-import io                        from 'socket.io-client';
-import ClientOffer               from '../../Models/client-offer.model';
-import SimplePeer                 from 'simple-peer';
-import JoinAcknowledgement        from '../../Models/join-acknowledgement.model';
-import { injectable }             from 'inversify';
-import { BehaviorSubject }        from 'rxjs';
-import { Commands }               from '../Command/Commands/commands.enum';
-import { getSignalingData }       from './utils';
-import CommandService             from '../Command/command.service';
+import JoinRequest from '../../Models/join-request.model';
+import Conference from '../../Models/conference.model';
+import uid from 'uid-safe';
+import Peer from 'simple-peer';
+import io from 'socket.io-client';
+import ClientOffer from '../../Models/client-offer.model';
+import SimplePeer from 'simple-peer';
+import JoinAcknowledgement from '../../Models/join-acknowledgement.model';
+import { injectable } from 'inversify';
+import { BehaviorSubject } from 'rxjs';
+import { Commands } from '../Command/Commands/commands.enum';
+import { getSignalingData } from './utils';
+import CommandService from '../Command/command.service';
 import openConnectionsAsInitiator from '../Command/Commands/openConnectionsAsInitiator';
-import { error }                  from '../error-modal.service';
+import { error } from '../error-modal.service';
 
 export const subscriber = new BehaviorSubject(new Map());
 
@@ -44,9 +44,9 @@ export default class PeerService {
 
     private registerWsActions() {
         if (this._server) {
-            this.server.on('connect_error', () => { error.next({ show: true, message: 'Network is unreachable', acknowledgable: false } )});
-            this.server.on('connect', () => { error.next({ show: false, message: '', acknowledgable: false } )});
-            this.server.on('server-error', (message: string) => { error.next({ message: message, show: true, acknowledgable: false } )});
+            this.server.on('connect_error', () => { error.next({ show: true, message: 'Network is unreachable', acknowledgable: false }) });
+            this.server.on('connect', () => { error.next({ show: false, message: '', acknowledgable: false }) });
+            this.server.on('server-error', (message: string) => { error.next({ message: message, show: true, acknowledgable: false }) });
             this.server.on('leaving', (peerId: string) => this.onLeaving(peerId));
             this.server.on('offer-request', (request: JoinRequest) => this.onOfferRequest(request));
             this.server.on('client-offer', (data: ClientOffer, peerId: string, sessionInitiator: boolean, emitterPeerId: string) => this.onClientOffer(data, peerId, sessionInitiator, emitterPeerId));
