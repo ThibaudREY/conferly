@@ -29,6 +29,7 @@
     "inversify": "^5.0.1",
     "inversify-react": "^0.4.3",
     "loaders.css": "^0.1.2",
+    "moment": "^2.24.0",
     "node-sass": "^4.12.0",
     "react": "^16.9.0",
     "react-addons-update": "^15.6.2",

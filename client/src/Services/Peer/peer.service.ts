@@ -11,8 +11,13 @@ import { Commands } from '../Command/Commands/commands.enum';
 import { getSignalingData } from './utils';
 import CommandService from '../Command/command.service';
 import openConnectionsAsInitiator from '../Command/Commands/openConnectionsAsInitiator';
+import onJoinMessage from '../Command/Commands/onJoinMessage';
 import { error } from '../error-modal.service';
 import { Injectable } from 'injection-js';
+import ChatManagerService from '../Manager/ChatManagerService';
+import { injector } from '../..';
+import ChatMessage from '../../Models/chat-message.model';
+import { MessageType } from '../../Enums/message-type.enum';
 
 export const subscriber = new BehaviorSubject(new Map());
 
@@ -33,11 +38,15 @@ export default class PeerService {
 
     private readonly _server: SocketIOClient.Socket;
 
+    private readonly _chatManagerService: ChatManagerService;
+
     constructor() {
         this._peerConnections = new Map<string, Peer.Instance>();
         this.currentPeerConnection = new Peer();
         this._server = io(process.env.REACT_APP_SIGNALING_SERVER as string);
+        this._chatManagerService = injector.get(ChatManagerService);
         CommandService.register(Commands.OPEN_CNTS_AS_INIT, openConnectionsAsInitiator);
+        CommandService.register(Commands.JOIN_MESSAGE, onJoinMessage);
 
         this.registerWsActions();
     }
@@ -94,12 +103,25 @@ export default class PeerService {
 
     private registerInitiatorActions(pc: Peer.Instance) {
         pc.on('connect', () => {
+
+            // TEMP FIX: DO NOT PUSH THIS ON PRODUCTION
+            setTimeout(() => {
+                const message: ChatMessage = new ChatMessage(this.peerId, `Welcome`, MessageType.STATUS_MESSAGE);
+                pc.send(`${this._peerId}${Commands.JOIN_MESSAGE}${JSON.stringify(message)}`);
+            }, 10000);
+
             pc.send(`${this._peerId}${Commands.OPEN_CNTS_AS_INIT}${JSON.stringify(this.peers)}`);
             this.updateObservable();
         })
     }
 
     private registerActions(pc: Peer.Instance) {
+
+        pc.on('connect', () => {
+            const helloMessage = new ChatMessage(this.peerId, `${this.peerId} has joined the conference`, MessageType.STATUS_MESSAGE);
+            pc.send(`${this.peerId}${Commands.JOIN_MESSAGE}${JSON.stringify(helloMessage)}`);
+        });
+
         pc.on('data', async data => {
             data = new TextDecoder("utf-8").decode(data);
 
@@ -147,6 +169,9 @@ export default class PeerService {
                 pc.set(entry[0], entry[1]);
         }
         this.peerConnections = pc;
+        const byeMessage = new ChatMessage(peerId, `${peerId} has left the conference`, MessageType.STATUS_MESSAGE);
+        this.currentPeerConnection.send(`${peerId}${Commands.JOIN_MESSAGE}${JSON.stringify(byeMessage)}`);
+        this._chatManagerService.addMessage(byeMessage);
         this.updateObservable();
     }
 
