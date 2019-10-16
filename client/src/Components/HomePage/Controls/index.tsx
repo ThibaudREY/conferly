@@ -4,7 +4,7 @@ import update from 'react-addons-update';
 import Button from '../Button';
 import { withRouter, RouteComponentProps } from 'react-router-dom';
 import PeerService from '../../../Services/Peer/peer.service';
-import { resolve } from 'inversify-react';
+import injector from '../../../injector';
 
 interface ControlsProps extends RouteComponentProps<any> {
 
@@ -22,8 +22,12 @@ class Controls extends Component<ControlsProps, ControlsState> {
         roomId: ''
     };
 
-    @resolve(PeerService)
-    private readonly peerService!: PeerService;
+    private readonly peerService: PeerService;
+
+    constructor(props: ControlsProps) {
+        super(props);
+        this.peerService = injector.get(PeerService);
+    }
 
     private async showRoom() {
 

@@ -3,6 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@babel/plugin-proposal-class-properties": "^7.5.5",
+    "@babel/plugin-proposal-decorators": "^7.6.0",
+    "@babel/preset-typescript": "^7.6.0",
     "@types/bluebird": "^3.5.27",
     "@types/bootstrap": "^4.3.1",
     "@types/inversify": "^2.0.33",
@@ -18,9 +21,11 @@
     "@types/socket.io-client": "^1.4.32",
     "@types/uid-safe": "^2.1.2",
     "@types/uuid": "^3.4.5",
+    "add": "^2.0.6",
     "babel-plugin-transform-typescript-metadata": "^0.2.2",
     "bluebird": "latest",
     "bootstrap": "^4.3.1",
+    "injection-js": "^2.2.2",
     "inversify": "^5.0.1",
     "inversify-react": "^0.4.3",
     "loaders.css": "^0.1.2",
@@ -44,7 +49,8 @@
     "socket.io": "^2.3.0",
     "socket.io-client": "latest",
     "typescript": "3.6.3",
-    "uid-safe": "^2.1.5"
+    "uid-safe": "^2.1.5",
+    "yarn": "^1.19.1"
   },
   "scripts": {
     "start": "react-app-rewired start",
