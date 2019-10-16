@@ -6,5 +6,5 @@ const DIContainer = new Container();
 DIContainer.bind<PeerService>(PeerService).toConstantValue(new PeerService());
 DIContainer.bind<StreamManagerService>(StreamManagerService).toConstantValue(new StreamManagerService());
 
-export default DIContainer;
+export { DIContainer };
 

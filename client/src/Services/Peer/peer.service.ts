@@ -6,7 +6,6 @@ import io from 'socket.io-client';
 import ClientOffer from '../../Models/client-offer.model';
 import SimplePeer from 'simple-peer';
 import JoinAcknowledgement from '../../Models/join-acknowledgement.model';
-import { injectable } from 'inversify';
 import { BehaviorSubject } from 'rxjs';
 import { Commands } from '../Command/Commands/commands.enum';
 import { getSignalingData } from './utils';
@@ -16,7 +15,6 @@ import { error } from '../error-modal.service';
 
 export const subscriber = new BehaviorSubject(new Map());
 
-@injectable()
 export default class PeerService {
 
     private currentPeerConnection: Peer.Instance; // TODO: Maybe need a stack (if initiator is handling several processes at once
