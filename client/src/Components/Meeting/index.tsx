@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
 import PeerService, { subscriber } from '../../Services/Peer/peer.service';
-import DIContainer from '../../ioc';
 import SimplePeer from 'simple-peer';
 import { Subscription } from 'rxjs';
 import update from 'react-addons-update';
 import StreamManagerService from '../../Services/Manager/StreamManagerService';
+import { resolve } from 'inversify-react';
 
 interface MeetingProps {
     match: any
@@ -23,8 +23,10 @@ export default class Meeting extends Component<MeetingProps, MeetingState> {
         peerConnections: new Map()
     };
 
-    private peerService: PeerService = DIContainer.resolve(PeerService);
-    private streamManagerService: StreamManagerService = DIContainer.resolve(StreamManagerService);
+    @resolve(PeerService)
+    private peerService!: PeerService;
+    @resolve(StreamManagerService)
+    private streamManagerService!: StreamManagerService;
     private subscription?: Subscription;
 
     async componentDidMount(): Promise<void> {

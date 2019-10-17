@@ -4,7 +4,7 @@ import update from 'react-addons-update';
 import Button from '../Button';
 import { withRouter, RouteComponentProps } from 'react-router-dom';
 import PeerService from '../../../Services/Peer/peer.service';
-import DIContainer from '../../../ioc';
+import { resolve } from 'inversify-react';
 
 interface ControlsProps extends RouteComponentProps<any> {
 
@@ -22,7 +22,8 @@ class Controls extends Component<ControlsProps, ControlsState> {
         roomId: ''
     };
 
-    private readonly peerService: PeerService = DIContainer.resolve(PeerService);
+    @resolve(PeerService)
+    private readonly peerService!: PeerService;
 
     private async showRoom() {
 
