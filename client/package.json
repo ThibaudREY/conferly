@@ -18,6 +18,7 @@
     "@types/socket.io-client": "^1.4.32",
     "@types/uid-safe": "^2.1.2",
     "@types/uuid": "^3.4.5",
+    "babel-plugin-transform-typescript-metadata": "^0.2.2",
     "bluebird": "latest",
     "bootstrap": "^4.3.1",
     "inversify": "^5.0.1",
@@ -46,9 +47,9 @@
     "uid-safe": "^2.1.5"
   },
   "scripts": {
-    "start": "react-scripts start",
+    "start": "react-app-rewired start",
     "build": "echo REACT_APP_SIGNALING_SERVER=$SIGNALING_SERVER >> .env && react-scripts build",
-    "test": "react-scripts test",
+    "test": "react-app-rewired test",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {
@@ -65,5 +66,9 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "customize-cra": "^0.8.0",
+    "react-app-rewired": "^2.1.3"
   }
 }
