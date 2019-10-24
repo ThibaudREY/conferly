@@ -4,7 +4,7 @@ import update from 'react-addons-update';
 import Button from '../Button';
 import { withRouter, RouteComponentProps } from 'react-router-dom';
 import PeerService from '../../../Services/Peer/peer.service';
-import injector from '../../../injector';
+import { injector } from '../../..';
 
 interface ControlsProps extends RouteComponentProps<any> {
 
