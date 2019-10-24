@@ -3,8 +3,8 @@ import PeerService, { subscriber } from '../../Services/Peer/peer.service';
 import SimplePeer from 'simple-peer';
 import { Subscription } from 'rxjs';
 import update from 'react-addons-update';
-import injector from '../../injector';
 import StreamManagerService from '../../Services/Manager/StreamManagerService';
+import { injector } from '../..';
 
 interface MeetingProps {
     match: any

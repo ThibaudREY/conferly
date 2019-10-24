@@ -16,7 +16,6 @@ import { Injectable } from 'injection-js';
 
 export const subscriber = new BehaviorSubject(new Map());
 
-
 @Injectable()
 export default class PeerService {
 
