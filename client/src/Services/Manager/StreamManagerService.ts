@@ -1,6 +1,6 @@
-import { injectable } from "inversify";
+import { Injectable } from 'injection-js';
 
-@injectable()
+@Injectable()
 export default class StreamManagerService {
 
     private _mediaStreams: Map<string, Promise<MediaStream>>;

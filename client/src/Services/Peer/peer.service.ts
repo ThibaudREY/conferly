@@ -12,9 +12,12 @@ import { getSignalingData } from './utils';
 import CommandService from '../Command/command.service';
 import openConnectionsAsInitiator from '../Command/Commands/openConnectionsAsInitiator';
 import { error } from '../error-modal.service';
+import { Injectable } from 'injection-js';
 
 export const subscriber = new BehaviorSubject(new Map());
 
+
+@Injectable()
 export default class PeerService {
 
     private currentPeerConnection: Peer.Instance; // TODO: Maybe need a stack (if initiator is handling several processes at once

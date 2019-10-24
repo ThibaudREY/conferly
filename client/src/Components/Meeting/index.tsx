@@ -3,8 +3,8 @@ import PeerService, { subscriber } from '../../Services/Peer/peer.service';
 import SimplePeer from 'simple-peer';
 import { Subscription } from 'rxjs';
 import update from 'react-addons-update';
+import injector from '../../injector';
 import StreamManagerService from '../../Services/Manager/StreamManagerService';
-import { resolve } from 'inversify-react';
 
 interface MeetingProps {
     match: any
@@ -23,11 +23,15 @@ export default class Meeting extends Component<MeetingProps, MeetingState> {
         peerConnections: new Map()
     };
 
-    @resolve(PeerService)
-    private peerService!: PeerService;
-    @resolve(StreamManagerService)
-    private streamManagerService!: StreamManagerService;
+    private peerService: PeerService;
+    private streamManagerService: StreamManagerService;
     private subscription?: Subscription;
+
+    constructor(props: MeetingProps) {
+        super(props)
+        this.peerService = injector.get(PeerService);
+        this.streamManagerService = injector.get(StreamManagerService);
+    }
 
     async componentDidMount(): Promise<void> {
 
@@ -52,7 +56,6 @@ export default class Meeting extends Component<MeetingProps, MeetingState> {
                             this.streamManagerService.subscribePeerStream(entry[0], stream);
                         }
                     })
-
                 }
             });
 
