@@ -67,7 +67,8 @@
     "socket.io-client": "latest",
     "typescript": "3.6.3",
     "uid-safe": "^2.1.5",
-    "yarn": "^1.19.1"
+    "yarn": "^1.19.1",
+    "video-stream-merger": "^3.3.1"
   },
   "scripts": {
     "start": "react-app-rewired start",
@@ -91,6 +92,7 @@
     ]
   },
   "devDependencies": {
+    "babel-plugin-transform-typescript-metadata": "^0.2.2",
     "customize-cra": "^0.8.0",
     "react-app-rewired": "^2.1.3"
   }

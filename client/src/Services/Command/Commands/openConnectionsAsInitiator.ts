@@ -1,7 +1,7 @@
-import PeerService from '../../Peer/peer.service';
+import PeerService                   from '../../Peer/peer.service';
 import { createExistingPeersOffers } from '../../Peer/utils';
-import ChatManagerService from '../../Manager/ChatManagerService';
-import { injector } from '../../..';
+import { injector }                  from '../../..';
+import ChatManagerService            from '../../Manager/ChatManagerService';
 
 export default async function openConnectionsAsInitiator(self: PeerService, data: string) {
     if (!self.server)

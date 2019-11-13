@@ -1,0 +1,80 @@
+.video-chat {
+    position: relative;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: left;
+    max-width: 21vw;
+    max-height: 100vh;
+}
+
+.video-chat-menu {
+    display: flex;
+    width: 100%;
+    height: 6vh;
+}
+
+.video-chat-menu svg {
+    display: flex;
+    margin: 1vh;
+    zoom: 2;
+}
+
+.menu-item {
+    cursor: pointer;
+}
+
+.fullscreen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    max-width: 100vw;
+    max-height: 100vh
+}
+
+.fullscreen video {
+    object-fit: cover;
+    transform: scaleX(-1);
+}
+
+.hidden {
+    display: none;
+}
+
+
+.fullscreen video:nth-child(2):nth-last-child(1) {
+    height: 94vh;
+}
+
+.fullscreen video:nth-child(2):nth-last-child(2),
+video:nth-child(2):nth-last-child(2) ~ video {
+    width: 50vw;
+}
+
+.fullscreen video:nth-child(2):nth-last-child(3),
+.fullscreen video:nth-child(2):nth-last-child(3) ~ video {
+    width: 33.33vw;
+}
+
+.fullscreen video:nth-child(2):nth-last-child(4),
+.fullscreen video:nth-child(2):nth-last-child(4) ~ video {
+    width: 50vw;
+    height: 47vh;
+}
+
+.fullscreen video:nth-child(2):nth-last-child(5),
+.fullscreen video:nth-child(2):nth-last-child(5) ~ video,
+.fullscreen video:nth-child(2):nth-last-child(6),
+.fullscreen video:nth-child(2):nth-last-child(6) ~ video {
+    width: 33.33vw;
+    height: 47vh;
+}
+
+.fullscreen video:nth-child(2):nth-last-child(7),
+.fullscreen video:nth-child(2):nth-last-child(7) ~ video,
+.fullscreen video:nth-child(2):nth-last-child(8),
+.fullscreen video:nth-child(2):nth-last-child(8) ~ video,
+.fullscreen video:nth-child(2):nth-last-child(9),
+.fullscreen video:nth-child(2):nth-last-child(9) ~ video {
+    width: 33.33vw;
+    height: 31.33vh;
+}

@@ -1,7 +1,7 @@
-import React, { Component } from 'react';
+import React, { Component }                from 'react';
 import './index.css';
-import update from 'react-addons-update';
-import Button from '../Button';
+import update                              from 'react-addons-update';
+import Button                              from '../Button';
 import { withRouter, RouteComponentProps } from 'react-router-dom';
 import PeerService from '../../../Services/Peer/peer.service';
 import { injector } from '../../..';

@@ -11289,6 +11289,11 @@ verror@1.10.0:
     core-util-is "1.0.2"
     extsprintf "^1.2.0"
 
+video-stream-merger@^3.3.1:
+  version "3.3.1"
+  resolved "https://registry.yarnpkg.com/video-stream-merger/-/video-stream-merger-3.3.1.tgz#e0f5eee719be199ac43ca86796dc81278a1457f8"
+  integrity sha512-aQdlEUGp7r3HkQram6zom4QDzwIXeLo6XzST1e+1v3atkZoC0mIIFhuv0z/MHk8Yi6EN53u2jT8GbzqmxjUmnQ==
+
 vm-browserify@^1.0.1:
   version "1.1.2"
   resolved "https://registry.yarnpkg.com/vm-browserify/-/vm-browserify-1.1.2.tgz#78641c488b8e6ca91a75f511e7a3b32a86e5dda0"
