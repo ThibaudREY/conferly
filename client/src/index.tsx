@@ -7,10 +7,12 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import { ReflectiveInjector } from 'injection-js';
 import PeerService from './Services/Peer/peer.service';
 import StreamManagerService from './Services/Manager/StreamManagerService';
+import ChatManagerService from './Services/Manager/ChatManagerService';
 
 export const injector = ReflectiveInjector.resolveAndCreate([
     PeerService,
-    StreamManagerService
+    StreamManagerService,
+    ChatManagerService
 ])
 
 ReactDOM.render(<App />, document.getElementById('root'));

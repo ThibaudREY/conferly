@@ -5,6 +5,8 @@ import { Subscription } from 'rxjs';
 import update from 'react-addons-update';
 import StreamManagerService from '../../Services/Manager/StreamManagerService';
 import { injector } from '../..';
+import Chat from './Chat';
+import './index.css';
 
 interface MeetingProps {
     match: any
@@ -70,15 +72,26 @@ export default class Meeting extends Component<MeetingProps, MeetingState> {
         const { peerConnections } = this.state;
 
         return (
-            <div>
-                Meeting works !
-                <ul>
-                    {
-                        Array.from(peerConnections.entries()).map((value: [string, SimplePeer.Instance]) => {
-                            return <li key={value[0]}>{value[0]}</li>
-                        })
-                    }
-                </ul>
+            <div className="container">
+                <div className="row">
+                    <div className="col-sm-12">
+                        <div>
+                            Meeting works !
+                            <ul>
+                                {
+                                    Array.from(peerConnections.entries()).map((value: [string, SimplePeer.Instance]) => {
+                                        return <li key={value[0]}>{value[0]}</li>
+                                    })
+                                }
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div className="row fixed-bottom">
+                    <div className="col-sm-8">
+                        <Chat></Chat>
+                    </div>
+                </div>
             </div>
         );
     }
