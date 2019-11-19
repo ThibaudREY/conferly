@@ -7,20 +7,16 @@ export default class MergerService {
 
     private clones: Array<MediaStream> = [];
 
-    constructor () {
-        this.merger.start();
-    }
-
     public async getUserMedia() {
         this.merger.addStream(await navigator.mediaDevices.getUserMedia({video: true, audio: true}));
-        //this.merger.addStream(await navigator.mediaDevices.getUserMedia({video: true, audio: true}));
         //this.merger.addStream((await navigator.mediaDevices as any).getDisplayMedia({video: true, audio: true}));
+        this.merger.start();
         return this.merger;
     }
 
     public add(stream: MediaStream) {
         this.clones.push(stream);
-        this.merger.addStream(this.clones[this.clones.length-1])
+        this.merger.addStream(stream)
     }
 
     public pop() {

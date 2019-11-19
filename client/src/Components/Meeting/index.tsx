@@ -63,7 +63,6 @@ export default class Meeting extends Component<MeetingProps, MeetingState> {
             (streams: Map<string, Promise<MediaStream>>) => {
 
                 if (streams) {
-
                     let s = Array.from(streams.entries()).reduce((acc: Array<Promise<MediaStream>>, current: [string, Promise<MediaStream>]) => {
                         acc.push(current[1]);
                         return acc;
