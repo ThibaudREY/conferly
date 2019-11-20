@@ -4,6 +4,7 @@ import * as moment from 'moment';
 export default class ChatMessage {
 
     public senderId: string;
+    public username: string;
     public message: string;
     public timestamp: number;
     public type: MessageType;
@@ -13,8 +14,9 @@ export default class ChatMessage {
      * @param senderId the id of the sender
      * @param message message
      */
-    constructor(senderId: string, message: string, type: MessageType) {
+    constructor(senderId: string, username: string, message: string, type: MessageType) {
         this.senderId = senderId;
+        this.username = username;
         this.message = message;
         this.timestamp = moment.now();
         this.type = type;

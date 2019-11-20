@@ -71,7 +71,7 @@ export default class Chat extends Component<ChatProps, ChatState> {
     private handleSubmit(event: ChangeEvent<HTMLFormElement>): void {
 
         try {
-            const chatMessage = new ChatMessage(this.peerService.peerId, this.state.message, MessageType.PEER_MESSAGE);
+            const chatMessage = new ChatMessage(this.peerService.peerId, this.peerService.username, this.state.message, MessageType.PEER_MESSAGE);
             this.chatManagerService.addMessage(chatMessage);
             Array.from(this.peerService.peerConnections.entries()).forEach((entry: [string, SimplePeer.Instance]) => {
                 entry[1].send(`${this.peerService.peerId}${Commands.RCV_MESSAGE}${JSON.stringify(chatMessage)}`);
@@ -129,7 +129,7 @@ export default class Chat extends Component<ChatProps, ChatState> {
                                         :
                                         <div key={index} className="message-box">
                                             <div className={isSender ? 'text-right' : 'text-left'}>
-                                                < div className="username">{message.senderId}</div>
+                                                < div className="username">{message.username}</div>
                                                 <div className={isSender ? 'sender-bubble text-white' : 'receiver-bubble'}>{message.message}</div>
                                                 <time className="time">{date}</time>
                                             </div>

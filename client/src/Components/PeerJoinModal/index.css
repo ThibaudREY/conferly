@@ -1,0 +1,11 @@
+.join-modal-header {
+    text-align: left;
+    padding: 10px;
+    background: #4A00E0;
+    border-radius: 5px 5px 0 0;
+}
+
+.form-input-username {
+    border-width: 0 0 2px 0 !important;
+    border-color: #4A00E0 !important;
+}
