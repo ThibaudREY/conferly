@@ -1,13 +1,14 @@
-import React, { Component } from 'react';
+import React, { Component }        from 'react';
 import PeerService, { subscriber } from '../../Services/Peer/peer.service';
-import SimplePeer from 'simple-peer';
-import { Subscription } from 'rxjs';
-import update from 'react-addons-update';
-import StreamManagerService from '../../Services/Manager/StreamManagerService';
-import { injector } from '../..';
-import Chat from './Chat';
+import SimplePeer                  from 'simple-peer';
+import { Subscription }            from 'rxjs';
+import update                      from 'react-addons-update';
+import StreamManagerService        from '../../Services/Manager/StreamManagerService';
+import { injector }                from '../..';
+import Chat                        from './Chat';
 import './index.css';
-import PeerJoinModal from '../PeerJoinModal';
+import Board                       from './Board';
+import PeerJoinModal               from '../PeerJoinModal';
 
 interface MeetingProps {
     match: any
@@ -78,23 +79,14 @@ export default class Meeting extends Component<MeetingProps, MeetingState> {
 
     render() {
 
-        const { peerConnections } = this.state;
+        const { showModal } = this.state;
 
         return (
-            <div className="container">
+            <div className="mr-5 ml-5 mt-2">
                 <div className="row">
                     <div className="col-sm-12">
-                        <PeerJoinModal visible={this.state.showModal} handleClose={() => this.closeModal()}></PeerJoinModal>
-                        <div>
-                            Meeting works !
-                            <ul>
-                                {
-                                    Array.from(peerConnections.entries()).map((value: [string, SimplePeer.Instance]) => {
-                                        return <li key={value[0]}>{value[0]}</li>
-                                    })
-                                }
-                            </ul>
-                        </div>
+                        <PeerJoinModal visible={showModal} handleClose={() => this.closeModal()}></PeerJoinModal>
+                       <Board/>
                     </div>
                 </div>
                 <div className="row fixed-bottom">

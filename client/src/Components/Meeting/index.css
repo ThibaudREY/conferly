@@ -2,3 +2,7 @@
     position: fixed;
     bottom: 0;
 }
+
+.no-margin {
+    margin: 0 !important;
+}

@@ -1,9 +1,10 @@
-import Peer from 'simple-peer';
-import PeerService from './peer.service';
+import Peer               from 'simple-peer';
+import PeerService        from './peer.service';
 import ChatManagerService from '../Manager/ChatManagerService';
-import ChatMessage from '../../Models/chat-message.model';
-import { MessageType } from '../../Enums/message-type.enum';
-import { Commands } from '../Command/Commands/commands.enum';
+import ChatMessage        from '../../Models/chat-message.model';
+import { MessageType }    from '../../Enums/message-type.enum';
+import { Commands }       from '../Command/Commands/commands.enum';
+import CommandService     from '../Command/command.service';
 
 export async function getSignalingData(peerConnection: Peer.Instance) {
     return new Promise<Peer.SignalData>((resolve, reject) => {
@@ -32,7 +33,7 @@ export async function createExistingPeersOffers(self: PeerService, peers: { [key
 
                 peerConnection.on('connect', () => {
                     const helloMessage = new ChatMessage(self.peerId, self.username, `${self.username} has joined the conference`, MessageType.STATUS_MESSAGE);
-                    peerConnection.send(`${self.peerId}${Commands.JOIN_MESSAGE}${JSON.stringify(helloMessage)}`);
+                    CommandService.send(peerConnection, self.peerId, Commands.JOIN_MESSAGE, JSON.stringify(helloMessage));
                     chatService.addMessage(helloMessage);
                 });
 
