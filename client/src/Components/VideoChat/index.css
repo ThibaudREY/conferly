@@ -23,6 +23,11 @@
     cursor: pointer;
 }
 
+.menu-video-icon {
+    font-size: 0.5em;
+    color: #4A00E0;
+}
+
 .fullscreen {
     position: fixed;
     top: 0;

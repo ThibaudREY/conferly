@@ -12,10 +12,7 @@ import PeerJoinModal                     from '../PeerJoinModal';
 import FileDrop                          from './FileDrop';
 import { ToastContainer }                from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import Board                             from './Board';
-import PeerJoinModal                     from '../PeerJoinModal';
 import VideoChat                         from '../VideoChat';
-
 
 interface MeetingProps {
     match: any
@@ -89,10 +86,10 @@ export default class Meeting extends Component<MeetingProps, MeetingState> {
 
     render() {
 
-        const {showModal} = this.state;
+        const {showModal, streams} = this.state;
 
         return (
-            <div className="mr-5 ml-5 mt-2">
+            <div className="container-fluid">
                 <div className="row">
                     <div className="col-sm-12">
                         <VideoChat streams={streams}/>

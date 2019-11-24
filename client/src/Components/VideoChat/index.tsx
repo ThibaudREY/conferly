@@ -1,5 +1,5 @@
 import './index.css';
-import React                from 'react';
+import React from 'react';
 import VideoChatBubble from './VideoChatBubble';
 import {
     FaCompressArrowsAlt,
@@ -8,16 +8,16 @@ import {
     FaMicrophoneAltSlash,
     FaVideo,
     FaVideoSlash
-}                     from 'react-icons/fa';
+} from 'react-icons/fa';
 import {
     MdScreenShare,
     MdStopScreenShare
-}                     from "react-icons/md";
-import update         from 'react-addons-update';
-import Video          from './util/Video';
-import { injector }   from '../../index';
-import MergerService  from '../../Services/Peer/merger.service';
-import { peers }      from '../../Services/Peer/peer.service';
+} from "react-icons/md";
+import update from 'react-addons-update';
+import Video from './util/Video';
+import { injector } from '../../index';
+import MergerService from '../../Services/Peer/merger.service';
+import { peers } from '../../Services/Peer/peer.service';
 
 interface VideoChatProps {
     streams: Array<Promise<MediaStream>>
@@ -43,7 +43,7 @@ export default class VideoChat extends React.Component<VideoChatProps, VideoChat
 
     private toggleMic() {
         this.setState({
-            micActive: update(this.state.micActive, {$set: !this.state.micActive})
+            micActive: update(this.state.micActive, { $set: !this.state.micActive })
         });
         // TODO: clone each peers' stream
         // TODO: deactivate audio
@@ -60,7 +60,7 @@ export default class VideoChat extends React.Component<VideoChatProps, VideoChat
 
     private async toggleVideo() {
         this.setState({
-            videoActive: update(this.state.videoActive, {$set: !this.state.videoActive})
+            videoActive: update(this.state.videoActive, { $set: !this.state.videoActive })
         });
         // TODO: clone each peers' stream
         // TODO: deactivate video
@@ -71,14 +71,14 @@ export default class VideoChat extends React.Component<VideoChatProps, VideoChat
 
     private toggleScreenShare() {
         this.setState({
-            screenShare: update(this.state.screenShare, {$set: !this.state.screenShare}),
-            videoActive: update(this.state.videoActive, {$set: this.state.screenShare})
+            screenShare: update(this.state.screenShare, { $set: !this.state.screenShare }),
+            videoActive: update(this.state.videoActive, { $set: this.state.screenShare })
         })
     }
 
     private toggleFullscreen() {
         this.setState({
-            fullscreen: update(this.state.fullscreen, {$set: !this.state.fullscreen})
+            fullscreen: update(this.state.fullscreen, { $set: !this.state.fullscreen })
         })
     }
 
@@ -96,20 +96,20 @@ export default class VideoChat extends React.Component<VideoChatProps, VideoChat
         return (
             <div className={`video-chat ${this.state.fullscreen ? 'fullscreen' : ''}`}>
                 <div className='video-chat-menu'>
-                    <div className='menu-item' onClick={() => this.toggleMic()}>{this.state.micActive ?
-                        <FaMicrophoneAlt/> :
-                        <FaMicrophoneAltSlash/>}</div>
-                    <div className='menu-item' onClick={() => this.toggleVideo()}>{this.state.videoActive ?
-                        <FaVideo/> : <FaVideoSlash/>} </div>
-                    <div className='menu-item' onClick={() => this.toggleScreenShare()}>{this.state.screenShare ?
-                        <MdScreenShare/> : <MdStopScreenShare/>} </div>
-                    <div className="menu-item" onClick={() => this.toggleFullscreen()}>{this.state.fullscreen ?
-                        <FaCompressArrowsAlt/> : <FaExpandArrowsAlt/>} </div>
+                    <div className='menu-item menu-video-icon' onClick={() => this.toggleMic()}>{this.state.micActive ?
+                        <FaMicrophoneAlt /> :
+                        <FaMicrophoneAltSlash />}</div>
+                    <div className='menu-item menu-video-icon' onClick={() => this.toggleVideo()}>{this.state.videoActive ?
+                        <FaVideo /> : <FaVideoSlash />} </div>
+                    <div className='menu-item menu-video-icon' onClick={() => this.toggleScreenShare()}>{this.state.screenShare ?
+                        <MdScreenShare /> : <MdStopScreenShare />} </div>
+                    <div className="menu-item menu-video-icon" onClick={() => this.toggleFullscreen()}>{this.state.fullscreen ?
+                        <FaCompressArrowsAlt /> : <FaExpandArrowsAlt />} </div>
                 </div>
                 {
                     this.props.streams.map((stream: Promise<MediaStream>, index: number) => {
-                        return this.state.fullscreen ? <Video stream={stream} key={index}/> :
-                            <VideoChatBubble index={index} stream={stream} key={index}/>
+                        return this.state.fullscreen ? <Video stream={stream} key={index} /> :
+                            <VideoChatBubble index={index} stream={stream} key={index} />
                     })
                 }
             </div>
