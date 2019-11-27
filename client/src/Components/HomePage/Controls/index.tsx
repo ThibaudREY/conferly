@@ -11,7 +11,7 @@ interface ControlsProps extends RouteComponentProps<any> {
 }
 
 interface ControlsState {
-    showRoom: boolean
+    showRoom: boolean,
     roomId: string
 }
 

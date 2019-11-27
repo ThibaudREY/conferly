@@ -28,6 +28,8 @@ export default class PeerService {
 
     private _peerId: string = '';
 
+    private _username: string = '';
+
     private peers: { [key: string]: string } = {};
 
     private _roomId: string = '';
@@ -106,7 +108,7 @@ export default class PeerService {
 
             // TEMP FIX: DO NOT PUSH THIS ON PRODUCTION
             setTimeout(() => {
-                const message: ChatMessage = new ChatMessage(this.peerId, `Welcome`, MessageType.STATUS_MESSAGE);
+                const message: ChatMessage = new ChatMessage(this.peerId, this.username, `Welcome`, MessageType.STATUS_MESSAGE);
                 pc.send(`${this._peerId}${Commands.JOIN_MESSAGE}${JSON.stringify(message)}`);
             }, 10000);
 
@@ -118,7 +120,7 @@ export default class PeerService {
     private registerActions(pc: Peer.Instance) {
 
         pc.on('connect', () => {
-            const helloMessage = new ChatMessage(this.peerId, `${this.peerId} has joined the conference`, MessageType.STATUS_MESSAGE);
+            const helloMessage = new ChatMessage(this.peerId, this.username, `${this.username} has joined the conference`, MessageType.STATUS_MESSAGE);
             pc.send(`${this.peerId}${Commands.JOIN_MESSAGE}${JSON.stringify(helloMessage)}`);
         });
 
@@ -169,7 +171,8 @@ export default class PeerService {
                 pc.set(entry[0], entry[1]);
         }
         this.peerConnections = pc;
-        const byeMessage = new ChatMessage(peerId, `${peerId} has left the conference`, MessageType.STATUS_MESSAGE);
+        // fix below line with username
+        const byeMessage = new ChatMessage(peerId, peerId, `${peerId} has left the conference`, MessageType.STATUS_MESSAGE);
         this.currentPeerConnection.send(`${peerId}${Commands.JOIN_MESSAGE}${JSON.stringify(byeMessage)}`);
         this._chatManagerService.addMessage(byeMessage);
         this.updateObservable();
@@ -205,6 +208,14 @@ export default class PeerService {
 
     set roomId(value: string) {
         this._roomId = value;
+    }
+
+    get username(): string {
+        return this._username;
+    }
+
+    set username(value: string) {
+        this._username = value;
     }
 
 

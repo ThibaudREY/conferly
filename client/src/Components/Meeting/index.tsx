@@ -7,6 +7,7 @@ import StreamManagerService from '../../Services/Manager/StreamManagerService';
 import { injector } from '../..';
 import Chat from './Chat';
 import './index.css';
+import PeerJoinModal from '../PeerJoinModal';
 
 interface MeetingProps {
     match: any
@@ -14,7 +15,8 @@ interface MeetingProps {
 }
 
 interface MeetingState {
-    joined: boolean
+    joined: boolean,
+    showModal: boolean,
     peerConnections: Map<string, SimplePeer.Instance>
 }
 
@@ -22,6 +24,7 @@ export default class Meeting extends Component<MeetingProps, MeetingState> {
 
     readonly state = {
         joined: false,
+        showModal: true,
         peerConnections: new Map()
     };
 
@@ -60,11 +63,17 @@ export default class Meeting extends Component<MeetingProps, MeetingState> {
                     })
                 }
             });
+    }
+
+    private async closeModal(): Promise<void> {
 
         const { roomId } = this.props.match.params;
 
-        if ((this.props.location.state && !this.props.location.state.joined) || !this.props.location.state)
+        this.setState({ showModal: false });
+
+        if (((this.props.location.state && !this.props.location.state.joined) || !this.props.location.state))
             await this.peerService.joinRoom(roomId)
+
     }
 
     render() {
@@ -75,6 +84,7 @@ export default class Meeting extends Component<MeetingProps, MeetingState> {
             <div className="container">
                 <div className="row">
                     <div className="col-sm-12">
+                        <PeerJoinModal visible={this.state.showModal} handleClose={() => this.closeModal()}></PeerJoinModal>
                         <div>
                             Meeting works !
                             <ul>
