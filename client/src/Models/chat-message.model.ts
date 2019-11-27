@@ -1,4 +1,5 @@
 import { MessageType } from "../Enums/message-type.enum";
+import * as moment from 'moment';
 
 export default class ChatMessage {
 
@@ -15,7 +16,7 @@ export default class ChatMessage {
     constructor(senderId: string, message: string, type: MessageType) {
         this.senderId = senderId;
         this.message = message;
-        this.timestamp = + new Date();
+        this.timestamp = moment.now();
         this.type = type;
     }
 }
