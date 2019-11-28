@@ -7,7 +7,6 @@ import { FaPaperPlane, FaCommentDots } from 'react-icons/fa';
 import { Subscription } from "rxjs";
 import ChatManagerService from "../../../Services/Manager/ChatManagerService";
 import { IconContext } from "react-icons";
-import SimplePeer from "simple-peer";
 import CommandService from "../../../Services/Command/command.service";
 import { Commands } from "../../../Services/Command/Commands/commands.enum";
 import getDateByTimestampFromNow from '../../../Utils/date';
@@ -73,9 +72,8 @@ export default class Chat extends Component<ChatProps, ChatState> {
         try {
             const chatMessage = new ChatMessage(this.peerService.peerId, this.peerService.username, this.state.message, MessageType.PEER_MESSAGE);
             this.chatManagerService.addMessage(chatMessage);
-            Array.from(this.peerService.peerConnections.entries()).forEach((entry: [string, SimplePeer.Instance]) => {
-                entry[1].send(`${this.peerService.peerId}${Commands.RCV_MESSAGE}${JSON.stringify(chatMessage)}`);
-            })
+            console.log('broadcasting');
+            CommandService.broadcast(Commands.RCV_MESSAGE, JSON.stringify(chatMessage));
         } catch (err) {
             console.log(err, 'error');
         }

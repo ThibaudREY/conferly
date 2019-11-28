@@ -1,0 +1,1 @@
+module "react-canvas-draw";
