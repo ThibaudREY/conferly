@@ -9,6 +9,9 @@ import Chat                        from './Chat';
 import './index.css';
 import Board                       from './Board';
 import PeerJoinModal               from '../PeerJoinModal';
+import FileDrop                    from './FileDrop';
+import { ToastContainer }          from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 
 interface MeetingProps {
@@ -46,7 +49,7 @@ export default class Meeting extends Component<MeetingProps, MeetingState> {
             (peerConnections: Map<string, SimplePeer.Instance>) => {
                 if (peerConnections) {
                     this.setState({
-                        peerConnections: update(this.state.peerConnections, { $set: peerConnections })
+                        peerConnections: update(this.state.peerConnections, {$set: peerConnections})
                     });
 
                     Array.from(peerConnections.entries()).forEach((entry: [string, SimplePeer.Instance]) => {
@@ -69,9 +72,9 @@ export default class Meeting extends Component<MeetingProps, MeetingState> {
 
     private async closeModal(): Promise<void> {
 
-        const { roomId } = this.props.match.params;
+        const {roomId} = this.props.match.params;
 
-        this.setState({ showModal: false });
+        this.setState({showModal: false});
 
         if (((this.props.location.state && !this.props.location.state.joined) || !this.props.location.state))
             await this.peerService.joinRoom(roomId)
@@ -80,21 +83,25 @@ export default class Meeting extends Component<MeetingProps, MeetingState> {
 
     render() {
 
-        const { showModal } = this.state;
+        const {showModal} = this.state;
 
         return (
             <div className="mr-5 ml-5 mt-2">
                 <div className="row">
                     <div className="col-sm-12">
                         <PeerJoinModal visible={showModal} handleClose={() => this.closeModal()}></PeerJoinModal>
-                       <Board/>
+                        <Board/>
                     </div>
                 </div>
                 <div className="row fixed-bottom">
                     <div className="col-sm-8">
                         <Chat></Chat>
                     </div>
+                    <div className="col-sm-4 pl-0">
+                        <FileDrop/>
+                    </div>
                 </div>
+                <ToastContainer />
             </div>
         );
     }
