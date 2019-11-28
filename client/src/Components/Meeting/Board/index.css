@@ -3,6 +3,26 @@
     top: 0;
     right: 0;
     z-index: 999;
+    overflow-x: scroll;
+    overflow-y: hidden;
+    margin-top: 10px;
+    padding-top: 5px;
+    flex-wrap: nowrap !important;
+    width: 21vw !important;
+}
+
+.circle-picker::-webkit-scrollbar {
+    height: 6px;
+    background-color: #F5F5F5;
+}
+
+.circle-picker::-webkit-scrollbar-thumb {
+    background-color: rgb(74, 0, 224);;
+}
+
+.circle-picker::-webkit-scrollbar-track {
+    -webkit-box-shadow: inset 0 0 3px rgba(0, 0, 0, 0.3);
+    background-color: #F5F5F5;
 }
 
 .rail {

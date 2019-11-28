@@ -100,19 +100,7 @@ export default class Board extends Component<BoardProps, BoardState> {
             <div className='board'>
 
                 <div className="row">
-                    <div className="col-4">
-                        <div className="row align-items-end">
-                            <div className="col-1 offset-10">
-                                <div onClick={() => this.clear()} className='wiper'>
-                                    <div className='wiper-inner'>
-                                        <MdClear/>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div className="col-4 p-0">
+                    <div className="col-4 offset-4 p-0">
                         <Slider
 
                             domain={[0, 50]}
@@ -144,6 +132,13 @@ export default class Board extends Component<BoardProps, BoardState> {
                                      className={`eraser ${color === '#ffffff' ? 'inuse' : ''}`}>
                                     <div className='eraser-inner'>
                                         <FaEraser/>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="col-1">
+                                <div onClick={() => this.clear()} className='wiper'>
+                                    <div className='wiper-inner'>
+                                        <MdClear/>
                                     </div>
                                 </div>
                             </div>
