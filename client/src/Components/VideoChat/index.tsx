@@ -17,7 +17,6 @@ import update from 'react-addons-update';
 import Video from './util/Video';
 import { injector } from '../../index';
 import MergerService from '../../Services/Peer/merger.service';
-import { peers } from '../../Services/Peer/peer.service';
 
 interface VideoChatProps {
     streams: Array<Promise<MediaStream>>
@@ -41,32 +40,30 @@ export default class VideoChat extends React.Component<VideoChatProps, VideoChat
 
     private mergerService: MergerService = injector.get(MergerService);
 
+    constructor(props: VideoChatProps) {
+        super(props);
+    }
+
     private toggleMic() {
-        this.setState({
-            micActive: update(this.state.micActive, { $set: !this.state.micActive })
-        });
-        // TODO: clone each peers' stream
-        // TODO: deactivate audio
-        // TODO: addStream to merger
-        // TODO: remove(pop) stream from merger
-        // TODO: should work
-        peers.value.forEach((pc: any) => {
-            let clone: MediaStream = pc.streams[0].clone();
-            //clone.getVideoTracks()[0].enabled = !(clone.getVideoTracks()[0].enabled);
-            this.mergerService.add(clone);
-            //this.mergerService.pop();
-        });
+        let currentPeerStream: MediaStream = this.mergerService.merger.result;
+
+        if (currentPeerStream.getAudioTracks()[0]) {
+            currentPeerStream.getAudioTracks()[0].enabled = !(currentPeerStream.getAudioTracks()[0].enabled);
+            this.setState({
+                micActive: update(this.state.micActive, { $set: !this.state.micActive })
+            });
+        }
     }
 
     private async toggleVideo() {
-        this.setState({
-            videoActive: update(this.state.videoActive, { $set: !this.state.videoActive })
-        });
-        // TODO: clone each peers' stream
-        // TODO: deactivate video
-        // TODO: addStream to merger
-        // TODO: remove(pop) stream from merger
-        // TODO: should work
+        let currentPeerStream: MediaStream = this.mergerService.merger.result;
+
+        if (currentPeerStream.getVideoTracks()[0]) {
+            currentPeerStream.getVideoTracks()[0].enabled = !(currentPeerStream.getVideoTracks()[0].enabled);
+            this.setState({
+                videoActive: update(this.state.videoActive, { $set: !this.state.videoActive })
+            });
+        }
     }
 
     private toggleScreenShare() {
