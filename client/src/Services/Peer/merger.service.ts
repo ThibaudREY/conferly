@@ -1,25 +1,27 @@
-import { Injectable }         from 'injection-js';
-import * as VideoStreamMerger from "video-stream-merger";
+import { Injectable } from 'injection-js';
+import { peers }      from './peer.service';
 
 @Injectable()
 export default class MergerService {
-    public merger = new VideoStreamMerger();
 
-    private clones: Array<MediaStream> = [];
+    private stream!: MediaStream;
 
-    public async getUserMedia() {
-        this.merger.addStream(await navigator.mediaDevices.getUserMedia({video: true, audio: true}));
-        //this.merger.addStream((await navigator.mediaDevices as any).getDisplayMedia({video: true, audio: true}));
-        this.merger.start();
-        return this.merger;
+    public async getStream() {
+        this.stream = await navigator.mediaDevices.getUserMedia({video: true, audio: true});
+        return this.stream;
     }
 
-    public add(stream: MediaStream) {
-        this.clones.push(stream);
-        this.merger.addStream(stream)
+    public addCamera() {
+
     }
 
-    public pop() {
-        this.merger.removeStream(this.clones.pop())
+    public async addScreen() {
+        const screen = (await (navigator.mediaDevices as any).getDisplayMedia({video: true, audio: true}) as MediaStream);
+        peers.value.forEach((peer: any) => {
+            console.log(peer);
+            peer.removeTrack(this.stream.getTracks()[0], this.stream);
+            peer.addTrack(screen.getTracks()[0], this.stream);
+            // this.stream.addTrack(screen.getAudioTracks()[0]);
+        });
     }
 }

@@ -25,6 +25,8 @@ export default class FileDrop extends Component<FileDropProps, FileDropState> {
         sent: true
     };
 
+    private commandService: CommandService = injector.get(CommandService);
+
     constructor(props: FileDropProps) {
         super(props);
         destinee.subscribe(next => {
@@ -33,7 +35,7 @@ export default class FileDrop extends Component<FileDropProps, FileDropState> {
                 const peerService: PeerService = injector.get(PeerService);
                 const peerId = peerService.peerId;
                 this.state.files.forEach(async (file: File) => {
-                    CommandService.broadcast(Commands.FILE, JSON.stringify({peerId: peerId, username: peerService.username, filename: file.name, size: file.size, payload: await this.fileToString(file)}), 0, next.destinees)
+                    this.commandService.broadcast(Commands.FILE, JSON.stringify({peerId: peerId, username: peerService.username, filename: file.name, size: file.size, payload: await this.fileToString(file)}), 0, next.destinees)
                 });
 
                 this.setState({

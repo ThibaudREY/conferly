@@ -2,8 +2,6 @@ import './index.css';
 import React from 'react';
 import VideoChatBubble from './VideoChatBubble';
 import {
-    FaCompressArrowsAlt,
-    FaExpandArrowsAlt,
     FaMicrophoneAlt,
     FaMicrophoneAltSlash,
     FaVideo,
@@ -14,7 +12,6 @@ import {
     MdStopScreenShare
 } from "react-icons/md";
 import update from 'react-addons-update';
-import Video from './util/Video';
 import { injector } from '../../index';
 import MergerService from '../../Services/Peer/merger.service';
 
@@ -26,7 +23,6 @@ interface VideoChatState {
     micActive: boolean
     videoActive: boolean
     screenShare: boolean
-    fullscreen: boolean
 }
 
 export default class VideoChat extends React.Component<VideoChatProps, VideoChatState> {
@@ -34,18 +30,13 @@ export default class VideoChat extends React.Component<VideoChatProps, VideoChat
     readonly state = {
         micActive: true,
         videoActive: true,
-        screenShare: false,
-        fullscreen: false,
+        screenShare: false
     };
 
     private mergerService: MergerService = injector.get(MergerService);
 
-    constructor(props: VideoChatProps) {
-        super(props);
-    }
-
-    private toggleMic() {
-        let currentPeerStream: MediaStream = this.mergerService.merger.result;
+    private async toggleMic() {
+        let currentPeerStream: MediaStream = await this.mergerService.getStream();
 
         if (currentPeerStream.getAudioTracks()[0]) {
             currentPeerStream.getAudioTracks()[0].enabled = !(currentPeerStream.getAudioTracks()[0].enabled);
@@ -56,7 +47,7 @@ export default class VideoChat extends React.Component<VideoChatProps, VideoChat
     }
 
     private async toggleVideo() {
-        let currentPeerStream: MediaStream = this.mergerService.merger.result;
+        let currentPeerStream: MediaStream = await this.mergerService.getStream();
 
         if (currentPeerStream.getVideoTracks()[0]) {
             currentPeerStream.getVideoTracks()[0].enabled = !(currentPeerStream.getVideoTracks()[0].enabled);
@@ -66,32 +57,18 @@ export default class VideoChat extends React.Component<VideoChatProps, VideoChat
         }
     }
 
-    private toggleScreenShare() {
+    private async toggleScreenShare() {
+        await this.mergerService.addScreen();
+
         this.setState({
             screenShare: update(this.state.screenShare, { $set: !this.state.screenShare }),
             videoActive: update(this.state.videoActive, { $set: this.state.screenShare })
         })
     }
 
-    private toggleFullscreen() {
-        this.setState({
-            fullscreen: update(this.state.fullscreen, { $set: !this.state.fullscreen })
-        })
-    }
-
-    private getRandomColor() {
-        let letters = '0123456789ABCDEF';
-        let color = '#';
-        for (let i = 0; i < 6; i++) {
-            color += letters[Math.floor(Math.random() * 16)];
-        }
-        return color;
-    }
-
-
     render() {
         return (
-            <div className={`video-chat ${this.state.fullscreen ? 'fullscreen' : ''}`}>
+            <div className='video-chat'>
                 <div className='video-chat-menu'>
                     <div className='menu-item menu-video-icon' onClick={() => this.toggleMic()}>{this.state.micActive ?
                         <FaMicrophoneAlt /> :
@@ -100,14 +77,9 @@ export default class VideoChat extends React.Component<VideoChatProps, VideoChat
                         <FaVideo /> : <FaVideoSlash />} </div>
                     <div className='menu-item menu-video-icon' onClick={() => this.toggleScreenShare()}>{this.state.screenShare ?
                         <MdScreenShare /> : <MdStopScreenShare />} </div>
-                    <div className="menu-item menu-video-icon" onClick={() => this.toggleFullscreen()}>{this.state.fullscreen ?
-                        <FaCompressArrowsAlt /> : <FaExpandArrowsAlt />} </div>
                 </div>
                 {
-                    this.props.streams.map((stream: Promise<MediaStream>, index: number) => {
-                        return this.state.fullscreen ? <Video stream={stream} key={index} /> :
-                            <VideoChatBubble index={index} stream={stream} key={index} />
-                    })
+                    this.props.streams.map((stream: Promise<MediaStream>, index: number) => <VideoChatBubble index={index} stream={stream} key={index} />)
                 }
             </div>
         );

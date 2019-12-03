@@ -34,7 +34,7 @@ export async function createExistingPeersOffers(self: PeerService, peers: { [key
                 let peerConnection = new Peer({
                     initiator: true,
                     trickle: false,
-                    stream: (await mergerService.getUserMedia()).result
+                    stream: await mergerService.getStream()
                 });
 
                 peerConnection.on('stream', (stream: Promise<MediaStream>) => {

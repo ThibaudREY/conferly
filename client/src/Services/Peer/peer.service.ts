@@ -103,7 +103,7 @@ export default class PeerService {
         this.currentPeerConnection = new Peer({
             initiator: false,
             trickle: false,
-            stream: (await this.mergerService.getUserMedia()).result
+            stream: await this.mergerService.getStream()
         });
 
         this.currentPeerConnection.on('stream', (stream: Promise<MediaStream>) => {
@@ -161,8 +161,12 @@ export default class PeerService {
         this.currentPeerConnection = new Peer({
             initiator: true,
             trickle: false,
-            stream: (await this.mergerService.getUserMedia()).result
+            stream: await this.mergerService.getStream()
         });
+
+        this.currentPeerConnection.on('track', (track: MediaStreamTrack, stream: Promise<MediaStream>) => {
+            console.log(track);
+        })
 
         this.currentPeerConnection.on('stream', (stream: Promise<MediaStream>) => {
             this.streamManagerService.subscribePeerStream(request.peerId, stream);

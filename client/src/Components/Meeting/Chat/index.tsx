@@ -53,7 +53,7 @@ export default class Chat extends Component<ChatProps, ChatState> {
             this.receivedMessage = JSON.parse(data.substr(30));
             this.chatManagerService.addMessage(this.receivedMessage);
         });
-        CommandService.register(Commands.FILE, (self: any, data: string) => {
+        this.commandService.register(Commands.FILE, (self: any, data: string) => {
             data = data.substr(30);
             const fileMessage = new ObjectMessage(JSON.parse(data).peerId, JSON.parse(data).username, JSON.parse(data).filename, JSON.parse(data).payload, JSON.parse(data).size, MessageType.FILE_MESSAGE);
             this.chatManagerService.addMessage(fileMessage);
