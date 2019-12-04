@@ -1,18 +1,23 @@
 import { Component, ChangeEvent, RefObject, createRef } from "react";
-import ChatMessage from "../../../Models/chat-message.model";
-import PeerService from "../../../Services/Peer/peer.service";
-import React from "react";
-import update from 'react-addons-update';
-import { FaPaperPlane, FaCommentDots } from 'react-icons/fa';
-import { Subscription } from "rxjs";
-import ChatManagerService from "../../../Services/Manager/ChatManagerService";
-import { IconContext } from "react-icons";
-import CommandService from "../../../Services/Command/command.service";
-import { Commands } from "../../../Services/Command/Commands/commands.enum";
-import getDateByTimestampFromNow from '../../../Utils/date';
-import { MessageType } from "../../../Enums/message-type.enum";
-import { injector } from "../../..";
+import ChatMessage                                      from "../../../Models/chat-message.model";
+import PeerService                                      from "../../../Services/Peer/peer.service";
+import React                                            from "react";
+import update                                           from 'react-addons-update';
+import { FaPaperPlane, FaCommentDots }                  from 'react-icons/fa';
+import { Subscription }                                 from "rxjs";
+import ChatManagerService                               from "../../../Services/Manager/ChatManagerService";
+import { IconContext }             from "react-icons";
+import CommandService              from "../../../Services/Command/command.service";
+import { Commands }                from "../../../Services/Command/Commands/commands.enum";
+import getDateByTimestampFromNow   from '../../../Utils/date';
+import { MessageType }             from "../../../Enums/message-type.enum";
+import { injector }                from "../../..";
 import './index.css';
+import ObjectMessage               from '../../../Models/object-message.model';
+import FileIcon, { defaultStyles } from 'react-file-icon';
+import * as fileSaver              from 'file-saver';
+import b64toBlob                   from 'b64-to-blob';
+import { contentTypes }            from '../../../Utils/contentTypes';
 
 interface ChatProps {
 
@@ -47,15 +52,20 @@ export default class Chat extends Component<ChatProps, ChatState> {
             this.receivedMessage = JSON.parse(data.substr(30));
             this.chatManagerService.addMessage(this.receivedMessage);
         });
+        CommandService.register(Commands.FILE, (self: any, data: string) => {
+            data = data.substr(30);
+            const fileMessage = new ObjectMessage(JSON.parse(data).peerId, JSON.parse(data).username, JSON.parse(data).filename, JSON.parse(data).payload, JSON.parse(data).size, MessageType.FILE_MESSAGE);
+            this.chatManagerService.addMessage(fileMessage);
+        });
         this.refChatHistory = createRef<HTMLDivElement>()
     }
 
     async componentDidMount(): Promise<void> {
 
         this.subscription = this.chatManagerService.messages.subscribe(
-            (messages: ChatMessage[]) => {
+            (messages: Array<ChatMessage | ObjectMessage>) => {
                 this.setState({
-                    messages: update(this.state.messages, { $set: messages })
+                    messages: update(this.state.messages, {$set: messages})
                 });
                 this.scrollBottom();
             });
@@ -87,7 +97,31 @@ export default class Chat extends Component<ChatProps, ChatState> {
 
     private scrollBottom(): void {
         if (this.refChatHistory.current)
-            this.refChatHistory.current.scrollIntoView({ behavior: "smooth" });
+            this.refChatHistory.current.scrollIntoView({behavior: "smooth"});
+    }
+
+    private download(message: ObjectMessage) {
+        let ext = (message as ObjectMessage).filename.split('.').pop() || '';
+        let contentType = 'text/plain';
+        if (Object.keys(contentTypes).includes(ext)) {
+            contentTypes[ext].some(ct => {
+                if (message.base64.indexOf(ct) !== -1) {
+                    contentType = ct;
+                    return true;
+                }
+                return false;
+            })
+        }
+        // TODO: find
+
+        try {
+            const blob = b64toBlob(message.base64.replace(`data:${contentType};base64,`, ''), contentType);
+            const file = new File([blob], message.filename, {type: `data:${contentType};base64`});
+            fileSaver.saveAs(file);
+        } catch (e) {
+            console.warn('Content type missing form list, extension: ' + ext + ', in ' + message.base64.substr(0, 100) + '...')
+        }
+
     }
 
     render() {
@@ -100,9 +134,9 @@ export default class Chat extends Component<ChatProps, ChatState> {
                             <h6 className="text-white text-left pt-2">Conference</h6>
                         </div>
                         <div className="col-6">
-                            <IconContext.Provider value={{ className: 'chat-icon', size: '1.5em' }}>
+                            <IconContext.Provider value={{className: 'chat-icon', size: '1.5em'}}>
                                 <div className="text-right fix-icon">
-                                    <FaCommentDots />
+                                    <FaCommentDots/>
                                 </div>
                             </IconContext.Provider>
                         </div>
@@ -112,39 +146,57 @@ export default class Chat extends Component<ChatProps, ChatState> {
                     <div className="chat-history">
                         <ul className="chat-list">
                             {
-                                this.state.messages.map((message: ChatMessage, index: number) => {
+                                this.state.messages.map((message: ChatMessage | ObjectMessage, index: number) => {
 
-                                    const isSender: boolean = this.peerService.peerId === message.senderId ? true : false;
+                                    const isSender: boolean = this.peerService.peerId === message.senderId;
                                     const date: string = getDateByTimestampFromNow(message.timestamp);
-                                    const isJoining = message.type === MessageType.STATUS_MESSAGE ? true : false;
+                                    const isJoining = message.type === MessageType.STATUS_MESSAGE;
+                                    const extension = message.type === MessageType.FILE_MESSAGE ? (message as ObjectMessage).filename.split('.').pop() : '';
 
-                                    return isJoining ?
-                                        <div key={index} className="message-box">
-                                            <div className="text-center">
-                                                <div className="joining-bubble">{message.message}</div>
-                                            </div>
-                                        </div>
-                                        :
-                                        <div key={index} className="message-box">
-                                            <div className={isSender ? 'text-right' : 'text-left'}>
-                                                < div className="username">{message.username}</div>
-                                                <div className={isSender ? 'sender-bubble text-white' : 'receiver-bubble'}>{message.message}</div>
+                                    return message.type === MessageType.FILE_MESSAGE ?
+                                        <div key={index} className='message-box'>
+                                            <div className='text-left clickable'
+                                                 onClick={() => this.download((message as ObjectMessage))}>
+                                                <div className="username">{message.username}</div>
+                                                <FileIcon extension={extension} {...defaultStyles.docx} size={70}/>
+                                                <div className="username">{(message as ObjectMessage).filename}</div>
+                                                <div
+                                                    className="username">{((message as ObjectMessage).size / 1024).toFixed(2)}kb
+                                                </div>
                                                 <time className="time">{date}</time>
                                             </div>
-                                        </div>
+                                        </div> : (
+                                            isJoining ?
+                                                <div key={index} className="message-box">
+                                                    <div className="text-center">
+                                                        <div className="joining-bubble">{message.message}</div>
+                                                    </div>
+                                                </div>
+                                                :
+                                                <div key={index} className="message-box">
+                                                    <div className={isSender ? 'text-right' : 'text-left'}>
+                                                        < div className="username">{message.username}</div>
+                                                        <div
+                                                            className={isSender ? 'sender-bubble text-white' : 'receiver-bubble'}>{message.message}</div>
+                                                        <time className="time">{date}</time>
+                                                    </div>
+                                                </div>)
                                 })
                             }
                         </ul>
-                        <div ref={this.refChatHistory} />
+                        <div ref={this.refChatHistory}/>
                     </div>
                     <div className="new-message">
                         <form onSubmit={(event: ChangeEvent<HTMLFormElement>) => this.handleSubmit(event)}>
                             <div className="form-row">
                                 <div className="col-12">
                                     <div className="input-group">
-                                        <input value={this.state.message} onChange={this.handleChange} type="text" className="form-control input-message" placeholder="Say something"></input>
+                                        <input value={this.state.message} onChange={this.handleChange} type="text"
+                                               className="form-control input-message"
+                                               placeholder="Say something"/>
                                         <div className="input-group-append">
-                                            <button className="btn btn-primary" type="submit"><FaPaperPlane ></FaPaperPlane></button>
+                                            <button className="btn btn-primary" type="submit">
+                                                <FaPaperPlane/></button>
                                         </div>
                                     </div>
                                 </div>
@@ -152,7 +204,7 @@ export default class Chat extends Component<ChatProps, ChatState> {
                         </form>
                     </div>
                 </div>
-            </div >
+            </div>
         );
     }
 }

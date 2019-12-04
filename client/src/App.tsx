@@ -1,10 +1,11 @@
 import 'reflect-metadata';
-import React from 'react';
+import React                                      from 'react';
 import './App.css';
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
-import HomePage from './Components/HomePage';
-import Meeting from './Components/Meeting';
-import ErrorModal from './Services/error-modal.service';
+import HomePage                                   from './Components/HomePage';
+import Meeting                                    from './Components/Meeting';
+import ErrorModal                                 from './Services/error-modal.service';
+import DestineeModal                              from './Components/Meeting/FileDrop/file-destinee-modal';
 
 const App: React.FC = () => {
     return (
@@ -19,6 +20,7 @@ const App: React.FC = () => {
             </Router>
 
             <ErrorModal />
+            <DestineeModal />
         </div>
     );
 }

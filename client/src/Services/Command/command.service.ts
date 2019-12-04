@@ -27,13 +27,20 @@ export default class CommandService {
         CommandService.commands.set(command, callback);
     }
 
-    public static send(pc: SimplePeer.Instance, peerId: string, command: Commands, data?: string) {
+    public static send(pc: SimplePeer.Instance, peerId: string, command: Commands, data?: string | ArrayBuffer | null) {
         pc.send(LZString.compressToBase64(`${peerId}${command}${data}`));
     }
 
-    public static broadcast(command: Commands, data?: string, timeout?: number) {
-        Array.from(subscriber.value.entries()).forEach((entry: [string, SimplePeer.Instance]) => {
-            CommandService.send(entry[1], injector.get(PeerService).peerId, command, data)
-        })
+    public static broadcast(command: Commands, data?: string | ArrayBuffer | null, timeout?: number, destinees: string[] = []) {
+        if (destinees.length === 0) {
+            Array.from(subscriber.value.entries()).forEach((entry: [string, SimplePeer.Instance]) => {
+                CommandService.send(entry[1], injector.get(PeerService).peerId, command, data)
+            })
+        } else {
+            console.log(destinees);
+            destinees.forEach((peerId: string) => {
+                CommandService.send(subscriber.value.get(peerId), injector.get(PeerService).peerId, command, data)
+            })
+        }
     }
 }

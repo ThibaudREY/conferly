@@ -1,0 +1,126 @@
+.dropzone {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+    border-width: 2px;
+    border-radius: 2px;
+    border-color: #eeeeee;
+    border-style: dashed;
+    background-color: #fafafa;
+    color: #bdbdbd;
+    outline: none;
+    transition: border .24s ease-in-out;
+}
+
+.fullsize {
+    min-height: 220px;
+}
+
+.files {
+    max-height: 150px;
+    overflow-x: hidden;
+    overflow-y: scroll;
+    max-width: calc(100% - 13px) !important;
+}
+
+.files .file {
+    padding: 5px;
+    max-width: calc(100% - 15px);
+}
+
+.files .file:hover {
+    background-color: #e9eaea;
+}
+
+.files::-webkit-scrollbar {
+    width: 6px;
+    background-color: #F5F5F5;
+}
+
+.files::-webkit-scrollbar-thumb {
+    background-color: rgb(74, 0, 224);;
+}
+
+.files::-webkit-scrollbar-track {
+    -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+    background-color: #F5F5F5;
+}
+
+.send {
+    background-color: #007bff;
+    border-radius: .25rem;
+    display: block;
+    height: 2.5em;
+    line-height: 2.5em;
+    text-align: center;
+    color: white;
+    font-size: 2em;
+    margin: auto;
+    vertical-align: middle;
+}
+
+.remove-file {
+    position: absolute;
+    right: 0;
+    transform: scale(1.6);
+    margin-right: 20px;
+    margin-top: 5px;
+    cursor: pointer;
+    color: #bc411d;
+}
+
+.destinee-modal-header {
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+    height: 20%;
+    color: #f3f8fa;
+    background-color: rgb(74, 0, 224);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.5em;
+}
+
+.destinee-modal-footer {
+    border-bottom-left-radius: 5px;
+    border-bottom-right-radius: 5px;
+    height: 20%;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.5em;
+    position: absolute;
+    bottom: 0;
+}
+
+.checkbox > input[type=checkbox] {
+    display: none;
+}
+
+.checkbox > label div {
+    width: 23px;
+    height: 23px;
+    display: inline-block;
+    border: 2px solid #101010;
+    text-align: center;
+    line-height: 20px;
+    margin-right: 6px;
+    border-radius: 3px;
+    cursor: pointer;
+}
+
+label svg {
+    font-size: 16px;
+    opacity: 0;
+}
+
+.checkbox > label:hover div {
+    background: #e2dae4;
+}
+
+input:checked + label svg {
+    opacity: 1;
+}

@@ -37,14 +37,14 @@
 }
 
 .sender-bubble {
-    background: #0072ff;  
+    background: #0072ff;
     border-radius: 20px;
     padding: 6px 12px;
     display: inline-block;
 }
 
 .receiver-bubble {
-    background: #bdc3c7;   
+    background: #bdc3c7;
     border-radius: 20px;
     padding: 6px 12px;
     display: inline-block;
@@ -72,4 +72,8 @@ time {
 .chat-list {
     padding-left: 20px !important;
     padding-right: 20px !important;
+}
+
+.clickable {
+    cursor: pointer;
 }
