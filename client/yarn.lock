@@ -9141,11 +9141,6 @@ react-awesome-modal@latest:
   resolved "https://registry.yarnpkg.com/react-awesome-modal/-/react-awesome-modal-2.0.5.tgz#d19702f7e3bc1f43e734f5a60814c2d1593c693a"
   integrity sha512-H+0xKBhcGJCoDtMww5K+XUzQtK+oRNpXr1VZoN1tbBgu+fzrLrF+ZkdRC1XiPLJ5gpVd9uR90yg8nyPTtYj/OQ==
 
-react-base64-downloader@^2.0.3:
-  version "2.0.3"
-  resolved "https://registry.yarnpkg.com/react-base64-downloader/-/react-base64-downloader-2.0.3.tgz#18bdfff050bd6ab1846b6f9fb350d799724c277d"
-  integrity sha512-lAQZYNlMvMVjU9ISNdRpM3xQK87G63WclcIth+yAyuRs1nLn1u0LqyWZ2Kl+igCXeh+2wDM5jezCB5ndllx+pQ==
-
 react-canvas-draw@^1.0.2:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/react-canvas-draw/-/react-canvas-draw-1.0.2.tgz#36db1490e9b97633bc63c1672fb88fd6104f581f"

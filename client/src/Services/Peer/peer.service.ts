@@ -204,6 +204,7 @@ export default class PeerService {
         this.peerConnections = pc;
         const byeMessage = new ChatMessage(peerId, peerId, `${peerId} has left the conference`, MessageType.STATUS_MESSAGE);
         this.commandService.send(this.currentPeerConnection, peerId, Commands.JOIN_MESSAGE, JSON.stringify(byeMessage))
+        this.streamManagerService.unsubscribePeerStream(peerId);
         this._chatManagerService.addMessage(byeMessage);
         this.updateObservable();
     }
