@@ -14,6 +14,7 @@ import {
 import update from 'react-addons-update';
 import { injector } from '../../index';
 import MergerService from '../../Services/Peer/merger.service';
+import StreamManagerService from '../../Services/Manager/stream-manager.service';
 
 interface VideoChatProps {
     streams: Array<Promise<MediaStream>>
@@ -33,12 +34,12 @@ export default class VideoChat extends React.Component<VideoChatProps, VideoChat
         screenShare: false
     };
 
-    private mergerService: MergerService = injector.get(MergerService);
+    private streamManagerService: StreamManagerService = injector.get(StreamManagerService);
 
     private async toggleMic() {
-        let currentPeerStream: MediaStream = await this.mergerService.getStream();
+        let currentPeerStream: MediaStream | undefined = this.streamManagerService.currentPeerMediaStream;
 
-        if (currentPeerStream.getAudioTracks()[0]) {
+        if (currentPeerStream && currentPeerStream.getAudioTracks()[0]) {
             currentPeerStream.getAudioTracks()[0].enabled = !(currentPeerStream.getAudioTracks()[0].enabled);
             this.setState({
                 micActive: update(this.state.micActive, { $set: !this.state.micActive })
@@ -47,9 +48,9 @@ export default class VideoChat extends React.Component<VideoChatProps, VideoChat
     }
 
     private async toggleVideo() {
-        let currentPeerStream: MediaStream = await this.mergerService.getStream();
+        let currentPeerStream: MediaStream | undefined = this.streamManagerService.currentPeerMediaStream;
 
-        if (currentPeerStream.getVideoTracks()[0]) {
+        if (currentPeerStream && currentPeerStream.getVideoTracks()[0]) {
             currentPeerStream.getVideoTracks()[0].enabled = !(currentPeerStream.getVideoTracks()[0].enabled);
             this.setState({
                 videoActive: update(this.state.videoActive, { $set: !this.state.videoActive })
@@ -58,7 +59,7 @@ export default class VideoChat extends React.Component<VideoChatProps, VideoChat
     }
 
     private async toggleScreenShare() {
-        await this.mergerService.addScreen();
+        // await this.mergerService.addScreen();
 
         this.setState({
             screenShare: update(this.state.screenShare, { $set: !this.state.screenShare }),

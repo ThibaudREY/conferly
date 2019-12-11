@@ -1,4 +1,4 @@
-import { Injectable }      from 'injection-js';
+import { Injectable } from 'injection-js';
 import { BehaviorSubject } from 'rxjs';
 
 export const streams = new BehaviorSubject(new Map<string, Promise<MediaStream>>());
@@ -7,6 +7,7 @@ export const streams = new BehaviorSubject(new Map<string, Promise<MediaStream>>
 export default class StreamManagerService {
 
     private _mediaStreams: Map<string, Promise<MediaStream>>;
+    private _currentPeerMediaStream?: MediaStream;
 
     /**
      * @constructor
@@ -61,5 +62,12 @@ export default class StreamManagerService {
     public set streams(value: Map<string, Promise<MediaStream>>) {
         this._mediaStreams = value;
         streams.next(this._mediaStreams);
+    }
+
+    public get currentPeerMediaStream(): MediaStream | undefined {
+        return this._currentPeerMediaStream;
+    }
+    public set currentPeerMediaStream(stream: MediaStream | undefined) {
+        this._currentPeerMediaStream = stream;
     }
 }

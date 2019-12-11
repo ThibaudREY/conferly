@@ -100,11 +100,16 @@ export default class PeerService {
     }
 
     private async onJoinResponse(offer: SimplePeer.SignalData, peerId: string, roomId: string) {
+
+        const stream: MediaStream = await this.mergerService.getStream();
+
         this.currentPeerConnection = new Peer({
             initiator: false,
             trickle: false,
-            stream: await this.mergerService.getStream()
+            stream: stream
         });
+
+        this.streamManagerService.currentPeerMediaStream = stream;
 
         this.currentPeerConnection.on('stream', (stream: Promise<MediaStream>) => {
             this.streamManagerService.subscribePeerStream(peerId, stream);
@@ -157,12 +162,17 @@ export default class PeerService {
     }
 
     private async onOfferRequest(request: JoinRequest) {
+
+        const stream: MediaStream = await this.mergerService.getStream();
+
         delete this.currentPeerConnection;
         this.currentPeerConnection = new Peer({
             initiator: true,
             trickle: false,
-            stream: await this.mergerService.getStream()
+            stream: stream
         });
+
+        this.streamManagerService.currentPeerMediaStream = stream;
 
         this.currentPeerConnection.on('track', (track: MediaStreamTrack, stream: Promise<MediaStream>) => {
             console.log(track);
