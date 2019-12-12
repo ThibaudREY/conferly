@@ -140,25 +140,22 @@ export default class PeerService {
             this.commandService.send(pc, this._peerId, Commands.OPEN_CNTS_AS_INIT, JSON.stringify(this.peers));
             this.updateObservable();
         });
-
-        pc.on('data', async data => {
-            data = new TextDecoder("utf-8").decode(data);
-
-            pc.once('connect', () => {
-                const helloMessage = new ChatMessage(this.peerId, this.username, `${this.username} has joined the conference`, MessageType.STATUS_MESSAGE);
-                this.commandService.send(pc, this.peerId, Commands.JOIN_MESSAGE, JSON.stringify(helloMessage));
-            });
-        });
     }
 
     private registerActions(pc: Peer.Instance) {
+
+        pc.once('connect', () => {
+            const helloMessage = new ChatMessage(this.peerId, this.username, `${this.username} has joined the conference`, MessageType.STATUS_MESSAGE);
+            this.commandService.send(pc, this.peerId, Commands.JOIN_MESSAGE, JSON.stringify(helloMessage));
+        });
+
         pc.on('data', async data => {
             data = new TextDecoder("utf-8").decode(data);
 
             const senderId = await this.commandService.parse(this, data);
             this.peerConnections.set(senderId, pc);
             this.updateObservable();
-        });
+        })
     }
 
     private async onOfferRequest(request: JoinRequest) {
@@ -190,6 +187,7 @@ export default class PeerService {
     private onClientOffer(data: ClientOffer, peerId: string, sessionInitiator: boolean, emitterPeerId: string) {
         if (sessionInitiator) {
             this.registerInitiatorActions(this.currentPeerConnection);
+            this.registerActions(this.currentPeerConnection);
             this.peerConnections.set(emitterPeerId, this.currentPeerConnection);
         }
 
