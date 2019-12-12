@@ -23,7 +23,6 @@ export async function getSignalingData(peerConnection: Peer.Instance) {
 export async function createExistingPeersOffers(self: PeerService, peers: { [key: string]: any }, chatService: ChatManagerService) {
 
     let streamManagerService: StreamManagerService = injector.get(StreamManagerService);
-    let mergerService: MergerService = injector.get(MergerService);
     let commandService: CommandService = injector.get(CommandService);
 
     return Object.fromEntries(await Promise.all(
@@ -34,7 +33,7 @@ export async function createExistingPeersOffers(self: PeerService, peers: { [key
                 let peerConnection = new Peer({
                     initiator: true,
                     trickle: false,
-                    stream: await mergerService.getStream()
+                    stream: streamManagerService.currentPeerMediaStream
                 });
 
                 peerConnection.on('stream', (stream: Promise<MediaStream>) => {
