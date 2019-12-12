@@ -22,7 +22,7 @@ export default class Board extends Component<BoardProps, BoardState> {
 
     readonly state = {
         color: '#607d8b',
-        size: 12
+        size: 5
     };
 
     private canvasDraw: any;
@@ -74,10 +74,10 @@ export default class Board extends Component<BoardProps, BoardState> {
                     left: `${percent}%`,
                     position: 'absolute',
                     marginLeft: 0,
-                    marginTop: 10,
+                    marginTop: -13,
                     zIndex: 2,
-                    width: 30,
-                    height: 30,
+                    width: 25,
+                    height: 25,
                     border: 0,
                     textAlign: 'center',
                     cursor: 'pointer',
@@ -102,7 +102,7 @@ export default class Board extends Component<BoardProps, BoardState> {
             <div className='board'>
 
                 <div className="row">
-                    <div className="col-4 offset-4 p-0">
+                    <div className="col-2 offset-5 p-0 align-self-center">
                         <Slider
 
                             domain={[0, 50]}
@@ -127,29 +127,28 @@ export default class Board extends Component<BoardProps, BoardState> {
                             </Handles>
                         </Slider>
                     </div>
-                    <div className="col-4">
-                        <div className="row">
-                            <div className="col-1 offset-1">
-                                <div onClick={() => this.eraser()}
-                                    className={`eraser ${color === '#ffffff' ? 'inuse' : ''}`}>
-                                    <div className='eraser-inner'>
-                                        <FaEraser />
-                                    </div>
-                                </div>
+                    <div className="col-2 align-self-center d-flex justify-content-start">
+                        <div onClick={() => this.eraser()}
+                            className={`eraser ${color === '#ffffff' ? 'inuse' : ''}`}>
+                            <div className='eraser-inner'>
+                                <FaEraser />
                             </div>
-                            <div className="col-1">
-                                <div onClick={() => this.clear()} className='wiper'>
-                                    <div className='wiper-inner'>
-                                        <MdClear />
-                                    </div>
-                                </div>
+                        </div>
+                        <div onClick={() => this.clear()} className='wiper'>
+                            <div className='wiper-inner ml-3'>
+                                <MdClear />
                             </div>
                         </div>
                     </div>
+                    <div className="col-3 d-flex justify-content-end mt-2">
+                        <CirclePicker color={color}
+                            circleSize={20}
+                            circleSpacing={8}
+                            onChangeComplete={this.colorChange.bind(this)} />
+                    </div>
                 </div>
 
-                <CirclePicker color={color}
-                    onChangeComplete={this.colorChange.bind(this)} />
+
                 <div className='row' onMouseUp={() => this.draw()}>
                     <CanvasDraw hideGrid={true} canvasHeight='70vh' canvasWidth='100vw'
                         brushColor={color}

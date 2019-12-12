@@ -1,8 +1,7 @@
 .video-chat {
-    position: relative;
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: left;
+    position: absolute;
+    top: 0;
+    left: 0;
     max-width: 21vw;
     max-height: 100vh;
 }
