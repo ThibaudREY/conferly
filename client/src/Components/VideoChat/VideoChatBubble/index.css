@@ -3,26 +3,29 @@
     width: 12vh;
     object-fit: cover;
     border-radius: 50%;
-    transform: scaleX(-1);
-
     display: flex;
     flex-basis: 1px;
-
     margin: 1vw;
 }
 
 .overlay {
     z-index: 1000;
     position: absolute;
-    height: 12vh;
-    width: 12vh;
+    height: 7vh;
+    width: 7vh;
     opacity: 0;
     background-color: #282c34;
     margin: 1vw;
     border-radius: 50%;
 }
 
+.video-icon {
+    font-size: .5em;
+    margin: auto;
+}
+
 .overlay-small {
+    margin-top: 0;
     height: 12vh;
     width: 12vh;
     padding: 0;
@@ -30,8 +33,7 @@
 
 .overlay-fullscreen {
     z-index: 1001;
-    top: 0;
-    right: 0;
+    position: relative;
     opacity: 0.2;
     display: flex;
 }
@@ -50,18 +52,12 @@
     cursor: pointer;
 }
 
-.video-fullscreen-wrapper, .video-fullscreen {
-    z-index: 1000;
-    position: fixed;
-    top: 0;
-    left: 0;
-    height: 100vh;
-    width: 100vw;
-    object-fit: cover;
-}
-
 .video-fullscreen {
-    transform: scaleX(-1);
+    width: 50vw;
+    max-height: 32vw;
+    position: absolute;
+    left: 25vw;
+    top: 10vh;
 }
 
 .loud-ring {
@@ -87,4 +83,8 @@
 
 .name-bold {
     font-weight: bold;
+}
+
+video::-webkit-media-controls {
+    display: none !important;
 }

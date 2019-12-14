@@ -83,7 +83,6 @@ export default class Chat extends Component<ChatProps, ChatState> {
         try {
             const chatMessage = new ChatMessage(this.peerService.peerId, this.peerService.username, this.state.message, MessageType.PEER_MESSAGE);
             this.chatManagerService.addMessage(chatMessage);
-            console.log('broadcasting');
             this.commandService.broadcast(Commands.RCV_MESSAGE, JSON.stringify(chatMessage));
         } catch (err) {
             console.log(err, 'error');

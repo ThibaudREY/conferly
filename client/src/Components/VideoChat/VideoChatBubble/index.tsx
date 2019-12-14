@@ -1,8 +1,8 @@
 import './index.css'
-import React                    from 'react';
-import Video                    from '../util/Video';
-import update                   from 'react-addons-update';
-import { FaExpand, FaCompress } from 'react-icons/fa';
+import React, { RefObject } from 'react';
+import Video                     from '../util/Video';
+import update                                      from 'react-addons-update';
+import { FaExpand, FaCompress, FaExpandArrowsAlt } from 'react-icons/fa';
 
 interface VideoChatBubbleProps {
     stream: Promise<MediaStream>
@@ -18,46 +18,56 @@ interface VideoChatBubbleState {
 
 export default class VideoChatBubble extends React.Component<VideoChatBubbleProps, VideoChatBubbleState> {
 
+
     readonly state = {
         fullscreen: false,
         level: 0,
         intervalId: 0
     };
 
-    private expand() {
+    private readonly videoRef: RefObject<Video>;
+
+    constructor(props: VideoChatBubbleProps) {
+        super(props);
+        this.videoRef = React.createRef<Video>();
+    }
+
+    private toggleFullScreen() {
         this.setState({
-            fullscreen: update(this.state.fullscreen, {$set: true})
+            fullscreen: !this.state.fullscreen
         })
     }
 
     private reduce() {
         this.setState({
-            fullscreen: update(this.state.fullscreen, {$set: false})
+            fullscreen: update(this.state.fullscreen, { $set: false })
         })
     }
 
     render() {
 
-        const {stream, index} = this.props;
-        const {fullscreen} = this.state;
+        const { stream, index } = this.props;
+        const { fullscreen } = this.state;
 
-        const video = <Video className={fullscreen ? 'video-fullscreen' : 'bubble-video loud-ring'} stream={stream}
-                             key={fullscreen ? 'fullscreen' : 'small' + index} id={fullscreen ? '' : 'small' + index}/>
+        const video = <Video ref={this.videoRef} className={fullscreen ? 'video-fullscreen' : 'bubble-video'} stream={stream}
+            key="small" id={fullscreen ? '' : 'small' + index} />;
 
-        return fullscreen ?
-            <div className={'video-fullscreen-wrapper'}>
-                <div className='overlay overlay-fullscreen' onClick={() => this.reduce()}>
-                    <FaCompress/>
+        return (
+
+            <div className={fullscreen ? 'video-fullscreen-wrapper' : 'video-small-wrapper'}>
+                <div className={fullscreen ? 'overlay overlay-fullscreen' : 'overlay overlay-small'} onClick={() => this.toggleFullScreen()}>
+                    <div className="video-icon">
+                        {fullscreen ? <FaCompress/> : <FaExpand/>}
+                    </div>
                 </div>
+                {fullscreen ? <div className='overlay overlay-fullscreen' onClick={() => this.videoRef.current!.requestFullscreen()}>
+                    <div className="video-icon">
+                        <FaExpandArrowsAlt/>
+                    </div>
+                </div> : null}
                 {video}
             </div>
-
-            : <div className="video-small-wrapper">
-                <div className='overlay overlay-small' onClick={() => this.expand()}>
-                    <FaExpand/>
-                </div>
-                {video}
-            </div>
+        )
     }
 
 }

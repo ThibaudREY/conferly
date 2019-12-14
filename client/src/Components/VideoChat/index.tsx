@@ -11,9 +11,7 @@ import {
     MdScreenShare,
     MdStopScreenShare
 } from "react-icons/md";
-import update from 'react-addons-update';
 import { injector } from '../../index';
-import MergerService from '../../Services/Peer/merger.service';
 import StreamManagerService from '../../Services/Manager/stream-manager.service';
 
 interface VideoChatProps {
@@ -37,34 +35,49 @@ export default class VideoChat extends React.Component<VideoChatProps, VideoChat
     private streamManagerService: StreamManagerService = injector.get(StreamManagerService);
 
     private async toggleMic() {
-        let currentPeerStream: MediaStream | undefined = this.streamManagerService.currentPeerMediaStream;
+
+        let currentPeerStream: MediaStream = this.streamManagerService.currentPeerMediaStream;
 
         if (currentPeerStream && currentPeerStream.getAudioTracks()[0]) {
             currentPeerStream.getAudioTracks()[0].enabled = !(currentPeerStream.getAudioTracks()[0].enabled);
             this.setState({
-                micActive: update(this.state.micActive, { $set: !this.state.micActive })
+                micActive: !this.state.micActive
             });
         }
     }
 
     private async toggleVideo() {
-        let currentPeerStream: MediaStream | undefined = this.streamManagerService.currentPeerMediaStream;
+
+        let currentPeerStream: MediaStream = this.streamManagerService.currentPeerMediaStream;
 
         if (currentPeerStream && currentPeerStream.getVideoTracks()[0]) {
             currentPeerStream.getVideoTracks()[0].enabled = !(currentPeerStream.getVideoTracks()[0].enabled);
             this.setState({
-                videoActive: update(this.state.videoActive, { $set: !this.state.videoActive })
+                videoActive: !this.state.videoActive
             });
         }
     }
 
     private async toggleScreenShare() {
-        // await this.mergerService.addScreen();
 
-        this.setState({
-            screenShare: update(this.state.screenShare, { $set: !this.state.screenShare }),
-            videoActive: update(this.state.videoActive, { $set: this.state.screenShare })
-        })
+        let currentPeerStream: MediaStream = this.streamManagerService.currentPeerMediaStream;
+
+        if (currentPeerStream && currentPeerStream.getVideoTracks()[0]) {
+            this.setState(prevState => ({
+                screenShare: !prevState.screenShare,
+                videoActive: this.state.screenShare
+            }), async () => {
+
+                try {
+                    await this.streamManagerService.switchCamera(this.state.screenShare);
+                } catch {
+                    this.setState(prevState => ({
+                        screenShare: !prevState.screenShare,
+                        videoActive: this.state.screenShare
+                    }));
+                }
+            });
+        }
     }
 
     render() {
@@ -77,7 +90,7 @@ export default class VideoChat extends React.Component<VideoChatProps, VideoChat
                     <div className='menu-item menu-video-icon' onClick={() => this.toggleVideo()}>{this.state.videoActive ?
                         <FaVideo /> : <FaVideoSlash />} </div>
                     <div className='menu-item menu-video-icon' onClick={() => this.toggleScreenShare()}>{this.state.screenShare ?
-                        <MdScreenShare /> : <MdStopScreenShare />} </div>
+                        <MdStopScreenShare /> : <MdScreenShare />} </div>
                 </div>
                 {
                     this.props.streams.map((stream: Promise<MediaStream>, index: number) => <VideoChatBubble index={index} stream={stream} key={index} />)

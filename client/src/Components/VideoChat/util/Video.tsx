@@ -22,6 +22,10 @@ export default class Video extends React.Component<VideoProps, {}> {
         this.video.srcObject = await this.props.stream;
     }
 
+    async requestFullscreen() {
+        await this.video.requestFullscreen();
+    }
+
     render() {
         const {id, width, height, muted, children, className, style} = this.props;
 
@@ -39,8 +43,6 @@ export default class Video extends React.Component<VideoProps, {}> {
                     >
                         {children}
                     </video>;
-
-        console.log(this.video.srcObject ? (this.video.srcObject as MediaStream).getTracks() : null);
 
         return this.video.srcObject && (this.video.srcObject as MediaStream).getVideoTracks()[0].enabled ? (
             <div>

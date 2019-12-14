@@ -1,25 +1,24 @@
-import JoinRequest from '../../Models/join-request.model';
-import Conference from '../../Models/conference.model';
-import uid from 'uid-safe';
-import Peer from 'simple-peer';
-import io from 'socket.io-client';
-import ClientOffer from '../../Models/client-offer.model';
-import SimplePeer from 'simple-peer';
-import JoinAcknowledgement from '../../Models/join-acknowledgement.model';
-import { BehaviorSubject } from 'rxjs';
-import { Commands } from '../Command/Commands/commands.enum';
-import { getSignalingData } from './utils';
-import CommandService from '../Command/command.service';
+import JoinRequest                from '../../Models/join-request.model';
+import Conference                 from '../../Models/conference.model';
+import uid                        from 'uid-safe';
+import Peer                       from 'simple-peer';
+import SimplePeer                 from 'simple-peer';
+import io                         from 'socket.io-client';
+import ClientOffer                from '../../Models/client-offer.model';
+import JoinAcknowledgement        from '../../Models/join-acknowledgement.model';
+import { BehaviorSubject }        from 'rxjs';
+import { Commands }               from '../Command/Commands/commands.enum';
+import { getSignalingData }       from './utils';
+import CommandService             from '../Command/command.service';
 import openConnectionsAsInitiator from '../Command/Commands/openConnectionsAsInitiator';
-import { error } from '../error-modal.service';
-import { Injectable } from 'injection-js';
-import StreamManagerService from '../Manager/stream-manager.service';
-import { injector } from '../../index';
-import ChatManagerService from '../Manager/ChatManagerService';
-import onJoinMessage from '../Command/Commands/onJoinMessage';
-import ChatMessage from '../../Models/chat-message.model';
-import { MessageType } from '../../Enums/message-type.enum';
-import MergerService from './merger.service';
+import { error }                  from '../error-modal.service';
+import { Injectable }             from 'injection-js';
+import StreamManagerService       from '../Manager/stream-manager.service';
+import { injector }               from '../../index';
+import ChatManagerService         from '../Manager/ChatManagerService';
+import onJoinMessage              from '../Command/Commands/onJoinMessage';
+import ChatMessage                from '../../Models/chat-message.model';
+import { MessageType }            from '../../Enums/message-type.enum';
 
 export const peers = new BehaviorSubject(new Map());
 
@@ -47,8 +46,6 @@ export default class PeerService {
     private commandService: CommandService = injector.get(CommandService);
 
     private streamManagerService: StreamManagerService = injector.get(StreamManagerService);
-
-    private mergerService: MergerService = injector.get(MergerService);
 
     constructor() {
         this._peerConnections = new Map<string, Peer.Instance>();
@@ -95,24 +92,29 @@ export default class PeerService {
         if (this._server) {
             this.peerId = uid.sync(7);
             this._server.emit('join-request', new JoinRequest(roomId, this.peerId));
-            await this._server.on('join-response', (offer: SimplePeer.SignalData, peerId: string) => this.onJoinResponse(offer, peerId, roomId))
+            await this._server.on('join-response', (offer: SimplePeer.SignalData, peerId: string, initiatorPeerId: string) => this.onJoinResponse(offer, peerId, roomId, initiatorPeerId))
         }
     }
 
-    private async onJoinResponse(offer: SimplePeer.SignalData, peerId: string, roomId: string) {
+    private async onJoinResponse(offer: SimplePeer.SignalData, peerId: string, roomId: string, initiatorPeerId: string) {
 
-        const stream: MediaStream = await this.mergerService.getStream();
+        if (this.streamManagerService.currentPeerMediaStream.getTracks().length < 1) {
+            this.streamManagerService.currentPeerMediaStream = await this.streamManagerService.getUserMediaStream();
+        }
 
         this.currentPeerConnection = new Peer({
             initiator: false,
             trickle: false,
-            stream: stream
+            stream: this.streamManagerService.currentPeerMediaStream
         });
 
-        this.streamManagerService.currentPeerMediaStream = stream;
-
         this.currentPeerConnection.on('stream', (stream: Promise<MediaStream>) => {
-            this.streamManagerService.subscribePeerStream(peerId, stream);
+
+            if (peerId) {
+                this.streamManagerService.subscribePeerStream(peerId, stream);
+            } else {
+                this.streamManagerService.subscribePeerStream(initiatorPeerId, stream);
+            }
         });
 
         this.registerActions(this.currentPeerConnection);
@@ -160,20 +162,16 @@ export default class PeerService {
 
     private async onOfferRequest(request: JoinRequest) {
 
-        const stream: MediaStream = await this.mergerService.getStream();
+        if (this.streamManagerService.currentPeerMediaStream.getTracks().length < 1) {
+            this.streamManagerService.currentPeerMediaStream = await this.streamManagerService.getUserMediaStream();
+        }
 
         delete this.currentPeerConnection;
         this.currentPeerConnection = new Peer({
             initiator: true,
             trickle: false,
-            stream: stream
+            stream: this.streamManagerService.currentPeerMediaStream
         });
-
-        this.streamManagerService.currentPeerMediaStream = stream;
-
-        this.currentPeerConnection.on('track', (track: MediaStreamTrack, stream: Promise<MediaStream>) => {
-            console.log(track);
-        })
 
         this.currentPeerConnection.on('stream', (stream: Promise<MediaStream>) => {
             this.streamManagerService.subscribePeerStream(request.peerId, stream);
@@ -214,6 +212,7 @@ export default class PeerService {
         this.commandService.send(this.currentPeerConnection, peerId, Commands.JOIN_MESSAGE, JSON.stringify(byeMessage));
         this.streamManagerService.unsubscribePeerStream(peerId);
         this._chatManagerService.addMessage(byeMessage);
+        this.streamManagerService.currentPeerMediaStream.getTracks()[0].stop();
         this.updateObservable();
     }
 

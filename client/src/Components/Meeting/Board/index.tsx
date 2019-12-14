@@ -33,7 +33,6 @@ export default class Board extends Component<BoardProps, BoardState> {
 
         this.commandService.register(Commands.BOARD_UPDATE, (self: Board, data: string) => {
             this.canvasDraw.loadSaveData(data.substr(30), true);
-            console.log(this.canvasDraw);
         });
     }
 

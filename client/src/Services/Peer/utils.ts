@@ -7,7 +7,6 @@ import { Commands } from '../Command/Commands/commands.enum';
 import CommandService from '../Command/command.service';
 import { injector } from '../../index';
 import StreamManagerService from '../Manager/stream-manager.service';
-import MergerService from './merger.service';
 
 export async function getSignalingData(peerConnection: Peer.Instance) {
     return new Promise<Peer.SignalData>((resolve, reject) => {
@@ -38,6 +37,7 @@ export async function createExistingPeersOffers(self: PeerService, peers: { [key
 
                 peerConnection.on('stream', (stream: Promise<MediaStream>) => {
                     streamManagerService.subscribePeerStream(set[0], stream);
+                    console.log(streamManagerService.streams);
                 })
 
                 let signalingData = await getSignalingData(peerConnection);
