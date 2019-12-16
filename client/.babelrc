@@ -14,7 +14,13 @@
             {
                 "loose": true
             }
-        ]
+        ],
+        ["prismjs", {
+            "languages": ["html", "xml", "svg", "css", "clike", "javascript", "tsx"],
+            "plugins": ["line-numbers"],
+            "theme": "twilight",
+            "css": true
+        }]
     ],
     "presets": [
         "@babel/preset-typescript",
