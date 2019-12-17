@@ -1,18 +1,18 @@
-import React, { Component }        from 'react';
-import PeerService, { subscriber } from '../../Services/Peer/peer.service';
-import SimplePeer                  from 'simple-peer';
-import { Subscription }            from 'rxjs';
-import update                      from 'react-addons-update';
-import StreamManagerService        from '../../Services/Manager/StreamManagerService';
-import { injector }                from '../..';
-import Chat                        from './Chat';
+import React, { Component }              from 'react';
+import PeerService, { peers }            from '../../Services/Peer/peer.service';
+import StreamManagerService, { streams } from '../../Services/Manager/stream-manager.service';
+import SimplePeer                        from 'simple-peer';
+import { Subscription }                  from 'rxjs';
+import update                            from 'react-addons-update';
+import { injector }                      from '../..';
+import Chat                              from './Chat';
 import './index.css';
-import Board                       from './Board';
-import PeerJoinModal               from '../PeerJoinModal';
-import FileDrop                    from './FileDrop';
-import { ToastContainer }          from 'react-toastify';
+import Board                             from './Board';
+import PeerJoinModal                     from '../PeerJoinModal';
+import FileDrop                          from './FileDrop';
+import { ToastContainer }                from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-
+import VideoChat                         from '../VideoChat';
 
 interface MeetingProps {
     match: any
@@ -22,7 +22,8 @@ interface MeetingProps {
 interface MeetingState {
     joined: boolean,
     showModal: boolean,
-    peerConnections: Map<string, SimplePeer.Instance>
+    peerConnections: Map<string, SimplePeer.Instance>,
+    streams: Array<MediaStream>
 }
 
 export default class Meeting extends Component<MeetingProps, MeetingState> {
@@ -30,7 +31,8 @@ export default class Meeting extends Component<MeetingProps, MeetingState> {
     readonly state = {
         joined: false,
         showModal: true,
-        peerConnections: new Map()
+        peerConnections: new Map(),
+        streams: []
     };
 
     private peerService: PeerService;
@@ -45,29 +47,30 @@ export default class Meeting extends Component<MeetingProps, MeetingState> {
 
     async componentDidMount(): Promise<void> {
 
-        this.subscription = subscriber.subscribe(
+        peers.subscribe(
             (peerConnections: Map<string, SimplePeer.Instance>) => {
                 if (peerConnections) {
                     this.setState({
                         peerConnections: update(this.state.peerConnections, {$set: peerConnections})
                     });
-
-                    Array.from(peerConnections.entries()).forEach((entry: [string, SimplePeer.Instance]) => {
-
-                        if (!this.streamManagerService.streams.has(entry[0])) {
-
-                            const stream: Promise<MediaStream> = new Promise<MediaStream>(
-                                resolve => {
-                                    entry[1].on('stream', (stream: MediaStream) => {
-                                        resolve(stream);
-                                    })
-                                }
-                            )
-                            this.streamManagerService.subscribePeerStream(entry[0], stream);
-                        }
-                    })
                 }
             });
+
+        streams.subscribe(
+            (streams: Map<string, Promise<MediaStream>>) => {
+
+                if (streams) {
+                    let s = Array.from(streams.entries()).reduce((acc: Array<Promise<MediaStream>>, current: [string, Promise<MediaStream>]) => {
+                        acc.push(current[1]);
+                        return acc;
+                    }, []);
+
+                    this.setState({
+                        streams: update(this.state.streams, {$set: s})
+                    });
+                }
+            }
+        );
     }
 
     private async closeModal(): Promise<void> {
@@ -83,25 +86,26 @@ export default class Meeting extends Component<MeetingProps, MeetingState> {
 
     render() {
 
-        const {showModal} = this.state;
+        const {showModal, streams} = this.state;
 
         return (
-            <div className="mr-5 ml-5 mt-2">
+            <div className="container-fluid">
                 <div className="row">
                     <div className="col-sm-12">
-                        <PeerJoinModal visible={showModal} handleClose={() => this.closeModal()}></PeerJoinModal>
+                        <VideoChat streams={streams}/>
+                        <PeerJoinModal visible={showModal} handleClose={() => this.closeModal()}/>
                         <Board/>
                     </div>
                 </div>
                 <div className="row fixed-bottom">
                     <div className="col-sm-8">
-                        <Chat></Chat>
+                        <Chat/>
                     </div>
                     <div className="col-sm-4 pl-0">
                         <FileDrop/>
                     </div>
                 </div>
-                <ToastContainer />
+                <ToastContainer/>
             </div>
         );
     }

@@ -99,7 +99,7 @@ export default class SignalingService {
             const peerSocket = conference.peers.get(joinRequest.peerId);
 
             if (peerSocket) {
-                socket.to(peerSocket).emit('join-response', signalingData);
+                socket.to(peerSocket).emit('join-response', signalingData, undefined, conference.initiatorPeerId);
                 logger.debug('Emitted join-response with : ', signalingData);
             } else {
                 throw new PeerNotFoundException(`Error peer not found with id: ${joinRequest.peerId}`);

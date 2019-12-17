@@ -41,6 +41,7 @@ export default class Chat extends Component<ChatProps, ChatState> {
     private subscription?: Subscription;
     private receivedMessage!: ChatMessage;
     private refChatHistory: RefObject<HTMLDivElement>;
+    private commandService: CommandService = injector.get(CommandService);
 
     constructor(props: ChatProps) {
         super(props);
@@ -48,11 +49,11 @@ export default class Chat extends Component<ChatProps, ChatState> {
         this.chatManagerService = injector.get(ChatManagerService);
         this.handleChange = this.handleChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
-        CommandService.register(Commands.RCV_MESSAGE, (self: any, data: string) => {
+        this.commandService.register(Commands.RCV_MESSAGE, (self: any, data: string) => {
             this.receivedMessage = JSON.parse(data.substr(30));
             this.chatManagerService.addMessage(this.receivedMessage);
         });
-        CommandService.register(Commands.FILE, (self: any, data: string) => {
+        this.commandService.register(Commands.FILE, (self: any, data: string) => {
             data = data.substr(30);
             const fileMessage = new ObjectMessage(JSON.parse(data).peerId, JSON.parse(data).username, JSON.parse(data).filename, JSON.parse(data).payload, JSON.parse(data).size, MessageType.FILE_MESSAGE);
             this.chatManagerService.addMessage(fileMessage);
@@ -82,8 +83,7 @@ export default class Chat extends Component<ChatProps, ChatState> {
         try {
             const chatMessage = new ChatMessage(this.peerService.peerId, this.peerService.username, this.state.message, MessageType.PEER_MESSAGE);
             this.chatManagerService.addMessage(chatMessage);
-            console.log('broadcasting');
-            CommandService.broadcast(Commands.RCV_MESSAGE, JSON.stringify(chatMessage));
+            this.commandService.broadcast(Commands.RCV_MESSAGE, JSON.stringify(chatMessage));
         } catch (err) {
             console.log(err, 'error');
         }

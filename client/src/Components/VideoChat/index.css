@@ -1,0 +1,32 @@
+.video-chat {
+    position: absolute;
+    top: 0;
+    left: 0;
+    max-width: 21vw;
+    max-height: 100vh;
+}
+
+.video-chat-menu {
+    display: flex;
+    width: 100%;
+    height: 6vh;
+}
+
+.video-chat-menu svg {
+    display: flex;
+    margin: 1vh;
+    zoom: 2;
+}
+
+.menu-item {
+    cursor: pointer;
+}
+
+.menu-video-icon {
+    font-size: 0.5em;
+    color: #4A00E0;
+}
+
+.hidden {
+    display: none;
+}

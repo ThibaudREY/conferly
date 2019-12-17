@@ -1,35 +1,5 @@
-.circle-picker {
-    position: absolute;
-    top: 0;
-    right: 0;
-    z-index: 999;
-    overflow-x: scroll;
-    overflow-y: hidden;
-    margin-top: 10px;
-    padding-top: 5px;
-    flex-wrap: nowrap !important;
-    width: 21vw !important;
-}
-
-.circle-picker::-webkit-scrollbar {
-    height: 6px;
-    background-color: #F5F5F5;
-}
-
-.circle-picker::-webkit-scrollbar-thumb {
-    background-color: rgb(74, 0, 224);;
-}
-
-.circle-picker::-webkit-scrollbar-track {
-    -webkit-box-shadow: inset 0 0 3px rgba(0, 0, 0, 0.3);
-    background-color: #F5F5F5;
-}
-
 .rail {
-    position: absolute;
-    top: 50%;
     margin-left: 5px;
-    width: 100%;
     height: 5px;
     border-radius: 5px;
     background-color: #8B9CB6;
@@ -37,8 +7,8 @@
 
 .eraser, .wiper {
     margin-top: 5px;
-    width: 40px;
-    height: 40px;
+    width: 25px;
+    height: 25px;
     transform: scale(1);
     transition: transform 100ms ease 0s;
 }
@@ -52,6 +22,7 @@
     border-radius: 50%;
     transition: box-shadow 100ms ease 0s;
     text-align: center;
+    font-size: 10px;
 }
 
 .eraser-inner {

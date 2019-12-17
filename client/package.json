@@ -5,6 +5,7 @@
   "dependencies": {
     "@babel/plugin-proposal-class-properties": "^7.5.5",
     "@babel/plugin-proposal-decorators": "^7.6.0",
+    "@babel/plugin-proposal-optional-chaining": "^7.7.5",
     "@babel/preset-typescript": "^7.6.0",
     "@types/bluebird": "^3.5.27",
     "@types/bootstrap": "^4.3.1",
@@ -67,6 +68,7 @@
     "socket.io-client": "latest",
     "typescript": "3.6.3",
     "uid-safe": "^2.1.5",
+    "video-stream-merger": "^3.3.1",
     "yarn": "^1.19.1"
   },
   "scripts": {
@@ -91,6 +93,7 @@
     ]
   },
   "devDependencies": {
+    "babel-plugin-transform-typescript-metadata": "^0.2.2",
     "customize-cra": "^0.8.0",
     "react-app-rewired": "^2.1.3"
   }

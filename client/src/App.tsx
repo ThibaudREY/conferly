@@ -7,20 +7,21 @@ import Meeting                                    from './Components/Meeting';
 import ErrorModal                                 from './Services/error-modal.service';
 import DestineeModal                              from './Components/Meeting/FileDrop/file-destinee-modal';
 
-const App: React.FC = () => {
+function App() {
     return (
         <div className="App">
             <Router>
                 <Switch>
                     <Route exact path='/'>
-                        <HomePage />
+                        <HomePage/>
                     </Route>
-                    <Route path='/:roomId' component={Meeting} />
+                    <Route path='/:roomId' component={Meeting}/>
                 </Switch>
             </Router>
 
-            <ErrorModal />
-            <DestineeModal />
+            <DestineeModal/>
+            <ErrorModal/>
+
         </div>
     );
 }

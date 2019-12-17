@@ -1,0 +1,90 @@
+.bubble-video {
+    height: 12vh;
+    width: 12vh;
+    object-fit: cover;
+    border-radius: 50%;
+    display: flex;
+    flex-basis: 1px;
+    margin: 1vw;
+}
+
+.overlay {
+    z-index: 1000;
+    position: absolute;
+    height: 7vh;
+    width: 7vh;
+    opacity: 0;
+    background-color: #282c34;
+    margin: 1vw;
+    border-radius: 50%;
+}
+
+.video-icon {
+    font-size: .5em;
+    margin: auto;
+}
+
+.overlay-small {
+    margin-top: 0;
+    height: 12vh;
+    width: 12vh;
+    padding: 0;
+}
+
+.overlay-fullscreen {
+    z-index: 1001;
+    position: relative;
+    opacity: 0.2;
+    display: flex;
+}
+
+.overlay svg {
+    display: block;
+    margin: auto;
+    zoom: 3;
+    color: white;
+}
+
+.overlay:hover {
+    transition: opacity ease-in-out .3s;
+    opacity: 0.4;
+    display: flex;
+    cursor: pointer;
+}
+
+.video-fullscreen {
+    width: 50vw;
+    max-height: 32vw;
+    position: absolute;
+    left: 25vw;
+    top: 10vh;
+}
+
+.loud-ring {
+    border-radius: 50%;
+}
+
+.bubble-name {
+    height: 12vh;
+    width: 12vh;
+    object-fit: cover;
+    border-radius: 50%;
+
+    flex-basis: 1px;
+    display: flex;
+    flex-wrap: wrap;
+
+    margin: 1vw;
+    justify-content: center;
+    align-content: center;
+    background: linear-gradient(#e66465, #9198e5);
+    color: white;
+}
+
+.name-bold {
+    font-weight: bold;
+}
+
+video::-webkit-media-controls {
+    display: none !important;
+}

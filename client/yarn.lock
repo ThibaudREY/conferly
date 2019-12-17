@@ -348,6 +348,14 @@
     "@babel/helper-plugin-utils" "^7.0.0"
     "@babel/plugin-syntax-optional-catch-binding" "^7.2.0"
 
+"@babel/plugin-proposal-optional-chaining@^7.7.5":
+  version "7.7.5"
+  resolved "https://registry.yarnpkg.com/@babel/plugin-proposal-optional-chaining/-/plugin-proposal-optional-chaining-7.7.5.tgz#f0835f044cef85b31071a924010a2a390add11d4"
+  integrity sha512-sOwFqT8JSchtJeDD+CjmWCaiFoLxY4Ps7NjvwHC/U7l4e9i5pTRNt8nDMIFSOUL+ncFbYSwruHM8WknYItWdXw==
+  dependencies:
+    "@babel/helper-plugin-utils" "^7.0.0"
+    "@babel/plugin-syntax-optional-chaining" "^7.7.4"
+
 "@babel/plugin-proposal-unicode-property-regex@^7.4.4", "@babel/plugin-proposal-unicode-property-regex@^7.7.0":
   version "7.7.0"
   resolved "https://registry.yarnpkg.com/@babel/plugin-proposal-unicode-property-regex/-/plugin-proposal-unicode-property-regex-7.7.0.tgz#549fe1717a1bd0a2a7e63163841cb37e78179d5d"
@@ -409,6 +417,13 @@
   version "7.2.0"
   resolved "https://registry.yarnpkg.com/@babel/plugin-syntax-optional-catch-binding/-/plugin-syntax-optional-catch-binding-7.2.0.tgz#a94013d6eda8908dfe6a477e7f9eda85656ecf5c"
   integrity sha512-bDe4xKNhb0LI7IvZHiA13kff0KEfaGX/Hv4lMA9+7TEc63hMNvfKo6ZFpXhKuEp+II/q35Gc4NoMeDZyaUbj9w==
+  dependencies:
+    "@babel/helper-plugin-utils" "^7.0.0"
+
+"@babel/plugin-syntax-optional-chaining@^7.7.4":
+  version "7.7.4"
+  resolved "https://registry.yarnpkg.com/@babel/plugin-syntax-optional-chaining/-/plugin-syntax-optional-chaining-7.7.4.tgz#c91fdde6de85d2eb8906daea7b21944c3610c901"
+  integrity sha512-2MqYD5WjZSbJdUagnJvIdSfkb/ucOC9/1fRJxm7GAxY6YQLWlUvkfxoNbUPcPLHJyetKUDQ4+yyuUyAoc0HriA==
   dependencies:
     "@babel/helper-plugin-utils" "^7.0.0"
 
@@ -9141,11 +9156,6 @@ react-awesome-modal@latest:
   resolved "https://registry.yarnpkg.com/react-awesome-modal/-/react-awesome-modal-2.0.5.tgz#d19702f7e3bc1f43e734f5a60814c2d1593c693a"
   integrity sha512-H+0xKBhcGJCoDtMww5K+XUzQtK+oRNpXr1VZoN1tbBgu+fzrLrF+ZkdRC1XiPLJ5gpVd9uR90yg8nyPTtYj/OQ==
 
-react-base64-downloader@^2.0.3:
-  version "2.0.3"
-  resolved "https://registry.yarnpkg.com/react-base64-downloader/-/react-base64-downloader-2.0.3.tgz#18bdfff050bd6ab1846b6f9fb350d799724c277d"
-  integrity sha512-lAQZYNlMvMVjU9ISNdRpM3xQK87G63WclcIth+yAyuRs1nLn1u0LqyWZ2Kl+igCXeh+2wDM5jezCB5ndllx+pQ==
-
 react-canvas-draw@^1.0.2:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/react-canvas-draw/-/react-canvas-draw-1.0.2.tgz#36db1490e9b97633bc63c1672fb88fd6104f581f"
@@ -11288,6 +11298,11 @@ verror@1.10.0:
     assert-plus "^1.0.0"
     core-util-is "1.0.2"
     extsprintf "^1.2.0"
+
+video-stream-merger@^3.3.1:
+  version "3.3.1"
+  resolved "https://registry.yarnpkg.com/video-stream-merger/-/video-stream-merger-3.3.1.tgz#e0f5eee719be199ac43ca86796dc81278a1457f8"
+  integrity sha512-aQdlEUGp7r3HkQram6zom4QDzwIXeLo6XzST1e+1v3atkZoC0mIIFhuv0z/MHk8Yi6EN53u2jT8GbzqmxjUmnQ==
 
 vm-browserify@^1.0.1:
   version "1.1.2"
