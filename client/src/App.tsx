@@ -1,11 +1,12 @@
 import 'reflect-metadata';
-import React                                      from 'react';
+import React from 'react';
 import './App.css';
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
-import HomePage                                   from './Components/HomePage';
-import Meeting                                    from './Components/Meeting';
-import ErrorModal                                 from './Services/error-modal.service';
-import DestineeModal                              from './Components/Meeting/FileDrop/file-destinee-modal';
+import HomePage from './Components/HomePage';
+import Meeting from './Components/Meeting';
+import ErrorModal from './Services/error-modal.service';
+import DestineeModal from './Components/Meeting/FileDrop/file-destinee-modal';
+import SplashScreen from './Components/Splash';
 
 function App() {
     return (
@@ -13,14 +14,15 @@ function App() {
             <Router>
                 <Switch>
                     <Route exact path='/'>
-                        <HomePage/>
+                        <HomePage />
                     </Route>
-                    <Route path='/:roomId' component={Meeting}/>
+                    <Route path='/:roomId' component={Meeting} />
                 </Switch>
+                <SplashScreen />
             </Router>
 
-            <DestineeModal/>
-            <ErrorModal/>
+            <DestineeModal />
+            <ErrorModal />
 
         </div>
     );

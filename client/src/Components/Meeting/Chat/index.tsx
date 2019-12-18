@@ -1,23 +1,24 @@
 import { Component, ChangeEvent, RefObject, createRef } from "react";
-import ChatMessage                                      from "../../../Models/chat-message.model";
-import PeerService                                      from "../../../Services/Peer/peer.service";
-import React                                            from "react";
-import update                                           from 'react-addons-update';
-import { FaPaperPlane, FaCommentDots }                  from 'react-icons/fa';
-import { Subscription }                                 from "rxjs";
-import ChatManagerService                               from "../../../Services/Manager/ChatManagerService";
-import { IconContext }             from "react-icons";
-import CommandService              from "../../../Services/Command/command.service";
-import { Commands }                from "../../../Services/Command/Commands/commands.enum";
-import getDateByTimestampFromNow   from '../../../Utils/date';
-import { MessageType }             from "../../../Enums/message-type.enum";
-import { injector }                from "../../..";
+import ChatMessage from "../../../Models/chat-message.model";
+import PeerService from "../../../Services/Peer/peer.service";
+import React from "react";
+import update from 'react-addons-update';
+import { FaPaperPlane, FaCommentDots } from 'react-icons/fa';
+import { Subscription } from "rxjs";
+import ChatManagerService from "../../../Services/Manager/ChatManagerService";
+import { IconContext } from "react-icons";
+import CommandService from "../../../Services/Command/command.service";
+import { Commands } from "../../../Services/Command/Commands/commands.enum";
+import getDateByTimestampFromNow from '../../../Utils/date';
+import { MessageType } from "../../../Enums/message-type.enum";
+import { injector } from "../../..";
 import './index.css';
-import ObjectMessage               from '../../../Models/object-message.model';
+import ObjectMessage from '../../../Models/object-message.model';
 import FileIcon, { defaultStyles } from 'react-file-icon';
-import * as fileSaver              from 'file-saver';
-import b64toBlob                   from 'b64-to-blob';
-import { contentTypes }            from '../../../Utils/contentTypes';
+import * as fileSaver from 'file-saver';
+import b64toBlob from 'b64-to-blob';
+import { contentTypes } from '../../../Utils/contentTypes';
+import { splashSreen } from "../../Splash";
 
 interface ChatProps {
 
@@ -53,6 +54,12 @@ export default class Chat extends Component<ChatProps, ChatState> {
             this.receivedMessage = JSON.parse(data.substr(30));
             this.chatManagerService.addMessage(this.receivedMessage);
         });
+
+        this.commandService.register(Commands.WELCOME_MESSAGE, (self: any, data: string) => {
+            this.receivedMessage = JSON.parse(data.substr(30));
+            splashSreen.next({ show: false, message: '' });
+        });
+
         this.commandService.register(Commands.FILE, (self: any, data: string) => {
             data = data.substr(30);
             const fileMessage = new ObjectMessage(JSON.parse(data).peerId, JSON.parse(data).username, JSON.parse(data).filename, JSON.parse(data).payload, JSON.parse(data).size, MessageType.FILE_MESSAGE);
@@ -66,7 +73,7 @@ export default class Chat extends Component<ChatProps, ChatState> {
         this.subscription = this.chatManagerService.messages.subscribe(
             (messages: Array<ChatMessage | ObjectMessage>) => {
                 this.setState({
-                    messages: update(this.state.messages, {$set: messages})
+                    messages: update(this.state.messages, { $set: messages })
                 });
                 this.scrollBottom();
             });
@@ -97,7 +104,7 @@ export default class Chat extends Component<ChatProps, ChatState> {
 
     private scrollBottom(): void {
         if (this.refChatHistory.current)
-            this.refChatHistory.current.scrollIntoView({behavior: "smooth"});
+            this.refChatHistory.current.scrollIntoView({ behavior: "smooth" });
     }
 
     private download(message: ObjectMessage) {
@@ -116,7 +123,7 @@ export default class Chat extends Component<ChatProps, ChatState> {
 
         try {
             const blob = b64toBlob(message.base64.replace(`data:${contentType};base64,`, ''), contentType);
-            const file = new File([blob], message.filename, {type: `data:${contentType};base64`});
+            const file = new File([blob], message.filename, { type: `data:${contentType};base64` });
             fileSaver.saveAs(file);
         } catch (e) {
             console.warn('Content type missing form list, extension: ' + ext + ', in ' + message.base64.substr(0, 100) + '...')
@@ -134,9 +141,9 @@ export default class Chat extends Component<ChatProps, ChatState> {
                             <h6 className="text-white text-left pt-2">Conference</h6>
                         </div>
                         <div className="col-6">
-                            <IconContext.Provider value={{className: 'chat-icon', size: '1.5em'}}>
+                            <IconContext.Provider value={{ className: 'chat-icon', size: '1.5em' }}>
                                 <div className="text-right fix-icon">
-                                    <FaCommentDots/>
+                                    <FaCommentDots />
                                 </div>
                             </IconContext.Provider>
                         </div>
@@ -156,9 +163,9 @@ export default class Chat extends Component<ChatProps, ChatState> {
                                     return message.type === MessageType.FILE_MESSAGE ?
                                         <div key={index} className='message-box'>
                                             <div className='text-left clickable'
-                                                 onClick={() => this.download((message as ObjectMessage))}>
+                                                onClick={() => this.download((message as ObjectMessage))}>
                                                 <div className="username">{message.username}</div>
-                                                <FileIcon extension={extension} {...defaultStyles.docx} size={70}/>
+                                                <FileIcon extension={extension} {...defaultStyles.docx} size={70} />
                                                 <div className="username">{(message as ObjectMessage).filename}</div>
                                                 <div
                                                     className="username">{((message as ObjectMessage).size / 1024).toFixed(2)}kb
@@ -184,7 +191,7 @@ export default class Chat extends Component<ChatProps, ChatState> {
                                 })
                             }
                         </ul>
-                        <div ref={this.refChatHistory}/>
+                        <div ref={this.refChatHistory} />
                     </div>
                     <div className="new-message">
                         <form onSubmit={(event: ChangeEvent<HTMLFormElement>) => this.handleSubmit(event)}>
@@ -192,11 +199,11 @@ export default class Chat extends Component<ChatProps, ChatState> {
                                 <div className="col-12">
                                     <div className="input-group">
                                         <input value={this.state.message} onChange={this.handleChange} type="text"
-                                               className="form-control input-message"
-                                               placeholder="Say something"/>
+                                            className="form-control input-message"
+                                            placeholder="Say something" />
                                         <div className="input-group-append">
                                             <button className="btn btn-primary" type="submit">
-                                                <FaPaperPlane/></button>
+                                                <FaPaperPlane /></button>
                                         </div>
                                     </div>
                                 </div>

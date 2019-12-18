@@ -1,24 +1,25 @@
-import JoinRequest                from '../../Models/join-request.model';
-import Conference                 from '../../Models/conference.model';
-import uid                        from 'uid-safe';
-import Peer                       from 'simple-peer';
-import SimplePeer                 from 'simple-peer';
-import io                         from 'socket.io-client';
-import ClientOffer                from '../../Models/client-offer.model';
-import JoinAcknowledgement        from '../../Models/join-acknowledgement.model';
-import { BehaviorSubject }        from 'rxjs';
-import { Commands }               from '../Command/Commands/commands.enum';
-import { getSignalingData }       from './utils';
-import CommandService             from '../Command/command.service';
+import JoinRequest from '../../Models/join-request.model';
+import Conference from '../../Models/conference.model';
+import uid from 'uid-safe';
+import Peer from 'simple-peer';
+import SimplePeer from 'simple-peer';
+import io from 'socket.io-client';
+import ClientOffer from '../../Models/client-offer.model';
+import JoinAcknowledgement from '../../Models/join-acknowledgement.model';
+import { BehaviorSubject } from 'rxjs';
+import { Commands } from '../Command/Commands/commands.enum';
+import { getSignalingData } from './utils';
+import CommandService from '../Command/command.service';
 import openConnectionsAsInitiator from '../Command/Commands/openConnectionsAsInitiator';
-import { error }                  from '../error-modal.service';
-import { Injectable }             from 'injection-js';
-import StreamManagerService       from '../Manager/stream-manager.service';
-import { injector }               from '../../index';
-import ChatManagerService         from '../Manager/ChatManagerService';
-import onJoinMessage              from '../Command/Commands/onJoinMessage';
-import ChatMessage                from '../../Models/chat-message.model';
-import { MessageType }            from '../../Enums/message-type.enum';
+import { error } from '../error-modal.service';
+import { Injectable } from 'injection-js';
+import StreamManagerService from '../Manager/stream-manager.service';
+import { injector } from '../../index';
+import ChatManagerService from '../Manager/ChatManagerService';
+import onJoinMessage from '../Command/Commands/onJoinMessage';
+import ChatMessage from '../../Models/chat-message.model';
+import { MessageType } from '../../Enums/message-type.enum';
+import { splashSreen } from '../../Components/Splash';
 
 export const peers = new BehaviorSubject(new Map());
 
@@ -92,11 +93,18 @@ export default class PeerService {
         if (this._server) {
             this.peerId = uid.sync(7);
             this._server.emit('join-request', new JoinRequest(roomId, this.peerId));
+
+            splashSreen.next({ show: true, message: 'Requesting access' });
+
             await this._server.on('join-response', (offer: SimplePeer.SignalData, peerId: string, initiatorPeerId: string) => this.onJoinResponse(offer, peerId, roomId, initiatorPeerId))
         }
     }
 
     private async onJoinResponse(offer: SimplePeer.SignalData, peerId: string, roomId: string, initiatorPeerId: string) {
+
+        if (this.peerConnections.size == 0) {
+            splashSreen.next({ show: true, message: 'Receiving response access' });
+        }
 
         if (this.streamManagerService.currentPeerMediaStream.getTracks().length < 1) {
             this.streamManagerService.currentPeerMediaStream = await this.streamManagerService.getUserMediaStream();
@@ -122,7 +130,13 @@ export default class PeerService {
         const signalingData = await getSignalingData(this.currentPeerConnection);
 
         if (this._server) {
+
+            if (this.peerConnections.size == 0) {
+                splashSreen.next({ show: true, message: 'Joining session' });
+            }
+
             this._server.emit('join-ack', new JoinAcknowledgement(await signalingData, roomId, peerId), this.peerId);
+
             if (peerId) {
                 this.peerConnections.set(peerId, this.currentPeerConnection);
                 this.updateObservable();
@@ -136,7 +150,7 @@ export default class PeerService {
             // TEMP FIX: DO NOT PUSH THIS ON PRODUCTION
             setTimeout(() => {
                 const message: ChatMessage = new ChatMessage(this.peerId, this.username, `Welcome`, MessageType.STATUS_MESSAGE);
-                this.commandService.send(pc, this._peerId, Commands.JOIN_MESSAGE, JSON.stringify(message));
+                this.commandService.send(pc, this._peerId, Commands.WELCOME_MESSAGE, JSON.stringify(message));
             }, 10000);
 
             this.commandService.send(pc, this._peerId, Commands.OPEN_CNTS_AS_INIT, JSON.stringify(this.peers));
@@ -152,6 +166,11 @@ export default class PeerService {
         });
 
         pc.on('data', async data => {
+
+            if (!(this.currentPeerConnection as any).initiator && this.peerConnections.size === 0) {
+                splashSreen.next({ show: true, message: 'Connecting to existing peers' });
+            }
+
             data = new TextDecoder("utf-8").decode(data);
 
             const senderId = await this.commandService.parse(this, data);

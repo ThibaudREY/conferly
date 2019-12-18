@@ -1,0 +1,14 @@
+.splash-container {
+    width: 100vw !important;
+    height: 100vh !important;
+    z-index: 10000;
+    position: fixed;
+    left: 0;
+    top: 0;
+    background: #4A00E0;
+
+    display: flex;
+    flex-flow: column nowrap;
+    justify-content: center;
+    align-items: center; 
+}

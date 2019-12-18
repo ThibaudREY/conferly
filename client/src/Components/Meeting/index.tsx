@@ -16,6 +16,7 @@ import ToolBarItem from '../../Models/toolbar-item.model';
 import { FaPaintBrush } from 'react-icons/fa';
 import VideoChat from '../VideoChat';
 import ToolBar from './Toolbar';
+import { splashSreen } from '../Splash';
 
 interface MeetingProps {
     match: any
@@ -86,9 +87,10 @@ export default class Meeting extends Component<MeetingProps, MeetingState> {
 
         this.setState({ showModal: false });
 
-        if (((this.props.location.state && !this.props.location.state.joined) || !this.props.location.state))
+        if (((this.props.location.state && !this.props.location.state.joined) || !this.props.location.state)) {
             await this.peerService.joinRoom(roomId)
-
+            splashSreen.next({ show: true, message: '' });
+        }
     }
 
     public toogleToolbarItem(index: number): void {
@@ -119,7 +121,7 @@ export default class Meeting extends Component<MeetingProps, MeetingState> {
                         {
                             showLanding ?
                                 <div className='splash-wrapper'>
-                                    <img src={process.env.PUBLIC_URL + '/landing.svg'}/>
+                                    <img src={process.env.PUBLIC_URL + '/landing.svg'} />
                                 </div> :
                                 <div>
                                     <Board visible={this.state.items[0].show} />
