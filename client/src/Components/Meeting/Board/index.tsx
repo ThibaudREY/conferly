@@ -11,6 +11,7 @@ import { FaEraser, MdClear } from 'react-icons/all';
 import { injector } from '../../..';
 
 interface BoardProps {
+    visible: boolean
 }
 
 interface BoardState {
@@ -98,63 +99,65 @@ export default class Board extends Component<BoardProps, BoardState> {
         const { color, size } = this.state;
 
         return (
-            <div className='board'>
+            this.props.visible ?
 
-                <div className="row">
-                    <div className="col-2 offset-5 p-0 align-self-center">
-                        <Slider
+                <div className='board'>
 
-                            domain={[0, 50]}
-                            step={1}
-                            mode={2}
-                            values={[size]}
-                            onChange={this.sizeChange.bind(this)}
-                        >
-                            <div className='rail' />
-                            <Handles>
-                                {({ handles, getHandleProps }) => (
-                                    <div className="slider-handles">
-                                        {handles.map(handle => (
-                                            <this.handle
-                                                key={handle.id}
-                                                handle={handle}
-                                                getHandleProps={getHandleProps}
-                                            />
-                                        ))}
-                                    </div>
-                                )}
-                            </Handles>
-                        </Slider>
-                    </div>
-                    <div className="col-2 align-self-center d-flex justify-content-start">
-                        <div onClick={() => this.eraser()}
-                            className={`eraser ${color === '#ffffff' ? 'inuse' : ''}`}>
-                            <div className='eraser-inner'>
-                                <FaEraser />
+                    <div className="row">
+                        <div className="col-2 offset-5 p-0 align-self-center">
+                            <Slider
+
+                                domain={[0, 50]}
+                                step={1}
+                                mode={2}
+                                values={[size]}
+                                onChange={this.sizeChange.bind(this)}
+                            >
+                                <div className='rail' />
+                                <Handles>
+                                    {({ handles, getHandleProps }) => (
+                                        <div className="slider-handles">
+                                            {handles.map(handle => (
+                                                <this.handle
+                                                    key={handle.id}
+                                                    handle={handle}
+                                                    getHandleProps={getHandleProps}
+                                                />
+                                            ))}
+                                        </div>
+                                    )}
+                                </Handles>
+                            </Slider>
+                        </div>
+                        <div className="col-2 align-self-center d-flex justify-content-start">
+                            <div onClick={() => this.eraser()}
+                                className={`eraser ${color === '#ffffff' ? 'inuse' : ''}`}>
+                                <div className='eraser-inner'>
+                                    <FaEraser />
+                                </div>
+                            </div>
+                            <div onClick={() => this.clear()} className='wiper'>
+                                <div className='wiper-inner ml-3'>
+                                    <MdClear />
+                                </div>
                             </div>
                         </div>
-                        <div onClick={() => this.clear()} className='wiper'>
-                            <div className='wiper-inner ml-3'>
-                                <MdClear />
-                            </div>
+                        <div className="col-3 d-flex justify-content-end mt-2">
+                            <CirclePicker color={color}
+                                circleSize={20}
+                                circleSpacing={8}
+                                onChangeComplete={this.colorChange.bind(this)} />
                         </div>
                     </div>
-                    <div className="col-3 d-flex justify-content-end mt-2">
-                        <CirclePicker color={color}
-                            circleSize={20}
-                            circleSpacing={8}
-                            onChangeComplete={this.colorChange.bind(this)} />
+
+
+                    <div className='row' onMouseUp={() => this.draw()}>
+                        <CanvasDraw hideGrid={true} canvasHeight='70vh' canvasWidth='100vw'
+                            brushColor={color}
+                            brushRadius={size}
+                            ref={(canvasDraw: any) => this.canvasDraw = canvasDraw} />
                     </div>
-                </div>
-
-
-                <div className='row' onMouseUp={() => this.draw()}>
-                    <CanvasDraw hideGrid={true} canvasHeight='70vh' canvasWidth='100vw'
-                        brushColor={color}
-                        brushRadius={size}
-                        ref={(canvasDraw: any) => this.canvasDraw = canvasDraw} />
-                </div>
-            </div>
+                </div> : null
         );
     }
 }
