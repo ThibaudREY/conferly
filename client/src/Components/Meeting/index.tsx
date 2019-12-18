@@ -108,16 +108,26 @@ export default class Meeting extends Component<MeetingProps, MeetingState> {
 
     render() {
 
-        const { showModal, streams } = this.state;
+        const { showModal, streams, items } = this.state;
+
+        const showLanding = items.every((item: ToolBarItem) => { return !item.show });
 
         return (
             <div className="container-fluid">
                 <div className="row">
                     <div className="col-sm-12">
+                        {
+                            showLanding ?
+                                <div className='splash-wrapper'>
+                                    <img src={process.env.PUBLIC_URL + '/landing.svg'}/>
+                                </div> :
+                                <div>
+                                    <Board visible={this.state.items[0].show} />
+                                </div>
+                        }
                         <VideoChat streams={streams} />
-                        <PeerJoinModal visible={showModal} handleClose={() => this.closeModal()} />
-                        <Board visible={this.state.items[0].show} />
                         <ToolBar toggleItem={this.toogleToolbarItem.bind(this)} items={this.state.items.filter(item => !item.lock)} />
+                        <PeerJoinModal visible={showModal} handleClose={() => this.closeModal()} />
                     </div>
                 </div>
                 <div className="row fixed-bottom">

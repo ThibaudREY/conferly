@@ -1,7 +1,7 @@
 .toolbar-wrapper {
     transform: translateY(-50%);
-    position: absolute;
-    top: 50% !important;
+    position: fixed;
+    top: 40% !important;
     align-content: flex-end !important;
     right: 0;
     z-index: 999;
