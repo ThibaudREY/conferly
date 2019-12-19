@@ -1,6 +1,7 @@
-import { Injectable } from 'injection-js';
+import { Injectable }      from 'injection-js';
 import { BehaviorSubject } from 'rxjs';
-import { peers } from '../Peer/peer.service';
+import { peers }           from '../Peer/peer.service';
+import { toast }           from 'react-toastify';
 
 export const streams = new BehaviorSubject(new Map<string, Promise<MediaStream>>());
 
@@ -23,7 +24,13 @@ export default class StreamManagerService {
      * Get user media stream
      */
     public async getUserMediaStream() {
-        return await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+        let ms = new MediaStream();
+        try {
+            ms = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+        } catch (e) {
+            toast('It seems we don\'t have permission to access your camera, you may want to allow it to use the video chat', {type: 'error', autoClose: false, toastId: 'camera'});
+        }
+        return ms;
     }
 
     /**
