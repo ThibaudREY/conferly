@@ -74,7 +74,7 @@ export default class Chat extends Component<ChatProps, ChatState> {
             (messages: Array<ChatMessage | ObjectMessage>) => {
                 this.setState({
                     messages: update(this.state.messages, { $set: messages })
-                });
+                }, this.scrollBottom);
                 this.scrollBottom();
             });
     }
