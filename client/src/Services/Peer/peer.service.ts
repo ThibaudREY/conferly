@@ -21,6 +21,7 @@ import ChatMessage                from '../../Models/chat-message.model';
 import { MessageType }            from '../../Enums/message-type.enum';
 import { splashSreen }            from '../../Components/Splash';
 import { User }                   from '../../Models/user.model';
+import { board }                  from '../../Components/Meeting/Board';
 
 export const peers = new BehaviorSubject(new Map());
 
@@ -152,6 +153,7 @@ export default class PeerService {
             setTimeout(() => {
                 const message: ChatMessage = new ChatMessage(this.peerId, this.username, `Welcome`, MessageType.STATUS_MESSAGE);
                 this.commandService.send(pc, this._peerId, Commands.WELCOME_MESSAGE, JSON.stringify(message));
+                this.commandService.broadcast(Commands.BOARD_UPDATE, board.value.getSaveData())
             }, 10000);
 
             this.commandService.send(pc, this._peerId, Commands.OPEN_CNTS_AS_INIT, JSON.stringify(this.peers));
