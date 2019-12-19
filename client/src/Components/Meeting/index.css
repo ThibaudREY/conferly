@@ -6,3 +6,14 @@
 .no-margin {
     margin: 0 !important;
 }
+
+.splash-wrapper {
+    height: 80vh;
+    width: 90vw;
+    top: 10vh;
+    left: 5vw;
+    display: flex;
+    flex-flow: column nowrap;
+    justify-content: center;
+    align-items: center;
+}

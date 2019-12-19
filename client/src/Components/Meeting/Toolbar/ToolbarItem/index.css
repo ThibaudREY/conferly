@@ -1,0 +1,28 @@
+.toolbar-item-icon {
+    font-size: 1.5em;
+    color: white;
+}
+
+.toolbar-item {
+    padding: 10px;
+    border-right: solid 5px #4A00E0;
+}
+
+.toolbar-item-visible {
+    padding: 10px;
+    border-right: solid 5px #328def;
+}
+
+.toolbar-item:hover {
+    cursor: pointer;
+    background: rgb(141, 95, 233);
+    border-radius: 5px 0 0px 5px;
+    border-right: solid 5px rgb(141, 95, 233);
+}
+
+.toolbar-item-visible:hover {
+    cursor: pointer;
+    background: rgb(141, 95, 233);
+    border-radius: 5px 0 0px 5px;
+    border-right: solid 5px #328def;
+}
