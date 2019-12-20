@@ -56,7 +56,13 @@ export default class Chat extends Component<ChatProps, ChatState> {
         });
 
         this.commandService.register(Commands.WELCOME_MESSAGE, (self: any, data: string) => {
+            const senderId: string = data.substr(0, 10);
             this.receivedMessage = JSON.parse(data.substr(30));
+            this.peerService.peerConnections.get(senderId)!.user.username = this.receivedMessage.username;
+            this.peerService.peerConnections.get(senderId)!.user.minUsername = this.receivedMessage.username.substr(0, 3);
+            this.peerService.updateObservable();
+
+            this.chatManagerService.addMessage(this.receivedMessage);
             splashSreen.next({ show: false, message: '' });
         });
 

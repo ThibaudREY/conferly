@@ -1,11 +1,12 @@
 import { BehaviorSubject }                         from 'rxjs';
 import Modal                                       from "react-awesome-modal";
 import React, { ChangeEvent, useEffect, useState } from 'react';
-import { peers }                              from '../../../Services/Peer/peer.service';
+import { peers }                                   from '../../../Services/Peer/peer.service';
 import SimplePeer                                  from 'simple-peer';
 import './index.css';
 import { FaCheck, FaPaperPlane, MdClose }          from 'react-icons/all';
-import { toast } from 'react-toastify';
+import { toast }                                   from 'react-toastify';
+import { User }                                    from '../../../Models/user.model';
 
 
 export const destinee = new BehaviorSubject({
@@ -68,12 +69,12 @@ const DestineeModal: React.FC = () => {
             </div>
             <div className='container row ml-2'>
                 {
-                    Array.from(peers.value.entries()).map((entry: [string, SimplePeer.Instance]) => {
+                    Array.from(peers.value.entries()).map((entry: [string, {instance: SimplePeer.Instance, user: User}]) => {
                         return <div className="col-6 mt-3 checkbox" key={entry[0]}>
                             <input type="checkbox" id={entry[0]} onChange={e => addDestinee(e, entry[0])}/>
                             <label htmlFor={entry[0]} onClick={ e => e.stopPropagation() }>
                                 <div><FaCheck/></div>
-                                {entry[0]}
+                                {entry[1].user.username}
                             </label>
                         </div>
                     })
