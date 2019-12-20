@@ -239,7 +239,11 @@ export default class PeerService {
         this.commandService.send(this.currentPeerConnection, peerId, Commands.JOIN_MESSAGE, JSON.stringify(byeMessage));
         this.streamManagerService.unsubscribePeerStream(peerId);
         this._chatManagerService.addMessage(byeMessage);
-        this.streamManagerService.currentPeerMediaStream.getTracks()[0].stop();
+
+        const videoTrack = this.streamManagerService.currentPeerMediaStream.getTracks()[0];
+        if (videoTrack)
+            videoTrack.stop();
+
         this.updateObservable();
     }
 

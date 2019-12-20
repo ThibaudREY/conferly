@@ -4,6 +4,7 @@ import LZString               from 'lz-string';
 import PeerService, { peers } from '../Peer/peer.service';
 import { injector }           from '../../index';
 import { User }               from '../../Models/user.model';
+import { toast }              from 'react-toastify';
 
 export default class CommandService {
 
@@ -27,7 +28,11 @@ export default class CommandService {
     }
 
     public send(pc: SimplePeer.Instance, peerId: string, command: Commands, data?: string | ArrayBuffer | null) {
-        pc.send(LZString.compressToBase64(`${peerId}${command}${data}`));
+        try {
+            pc.send(LZString.compressToBase64(`${peerId}${command}${data}`));
+        } catch (e) {
+            toast('Failed to reach peer', {type: 'warning'})
+        }
     }
 
     public broadcast(command: Commands, data?: string | ArrayBuffer | null, timeout?: number, destinees: string[] = []) {
