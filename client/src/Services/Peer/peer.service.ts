@@ -104,7 +104,7 @@ export default class PeerService {
 
     private async onJoinResponse(offer: SimplePeer.SignalData, peerId: string, roomId: string, initiatorPeerId: string) {
 
-        if (this.peerConnections.size == 0) {
+        if (this.peerConnections.size === 0) {
             splashSreen.next({ show: true, message: 'Receiving response access' });
         }
 
@@ -133,7 +133,7 @@ export default class PeerService {
 
         if (this._server) {
 
-            if (this.peerConnections.size == 0) {
+            if (this.peerConnections.size === 0) {
                 splashSreen.next({ show: true, message: 'Joining session' });
             }
 

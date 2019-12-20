@@ -2,6 +2,7 @@ import { Injectable }      from 'injection-js';
 import { BehaviorSubject } from 'rxjs';
 import { peers }           from '../Peer/peer.service';
 import { toast }           from 'react-toastify';
+import { User }            from '../../Models/user.model';
 
 export const streams = new BehaviorSubject(new Map<string, Promise<MediaStream>>());
 
@@ -77,10 +78,10 @@ export default class StreamManagerService {
             try {
                 const screen = (await (navigator.mediaDevices as any).getDisplayMedia({ video: true, audio: true }) as MediaStream);
 
-                peers.value.forEach((peer: any) => {
+                peers.value.forEach((peer: {instance: any, user: User}) => {
 
                     try {
-                        peer.replaceTrack(this._currentPeerMediaStream.getVideoTracks()[0], screen.getVideoTracks()[0], this._currentPeerMediaStream);
+                        peer.instance.replaceTrack(this._currentPeerMediaStream.getVideoTracks()[0], screen.getVideoTracks()[0], this._currentPeerMediaStream);
                     } catch (err) {
                         console.log(err);
                     }
@@ -96,10 +97,10 @@ export default class StreamManagerService {
         } else {
             const video = await this.getUserMediaStream();
 
-            peers.value.forEach((peer: any) => {
+            peers.value.forEach((peer: {instance: any, user: User}) => {
 
                 try {
-                    peer.replaceTrack(this._currentPeerMediaStream.getVideoTracks()[0], video.getVideoTracks()[0], this._currentPeerMediaStream);
+                    peer.instance.replaceTrack(this._currentPeerMediaStream.getVideoTracks()[0], video.getVideoTracks()[0], this._currentPeerMediaStream);
                 } catch (err) {
                     console.log(err);
                 }

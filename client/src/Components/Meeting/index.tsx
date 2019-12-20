@@ -121,7 +121,7 @@ export default class Meeting extends Component<MeetingProps, MeetingState> {
                         {
                             showLanding ?
                                 <div className='splash-wrapper'>
-                                    <img src={process.env.PUBLIC_URL + '/landing.svg'} />
+                                    <img src={process.env.PUBLIC_URL + '/landing.svg'}  alt=''/>
                                 </div> :
                                 <div>
                                     <Board visible={this.state.items[0].show} />

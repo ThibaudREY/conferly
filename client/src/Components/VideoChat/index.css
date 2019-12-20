@@ -30,3 +30,7 @@
 .hidden {
     display: none;
 }
+
+.disabled {
+    color: #4a5369;
+}

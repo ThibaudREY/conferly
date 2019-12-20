@@ -48,13 +48,15 @@ export default class VideoChat extends React.Component<VideoChatProps, VideoChat
 
     private async toggleVideo() {
 
-        let currentPeerStream: MediaStream = this.streamManagerService.currentPeerMediaStream;
+        if (!this.state.screenShare) {
+            let currentPeerStream: MediaStream = this.streamManagerService.currentPeerMediaStream;
 
-        if (currentPeerStream && currentPeerStream.getVideoTracks()[0]) {
-            currentPeerStream.getVideoTracks()[0].enabled = !(currentPeerStream.getVideoTracks()[0].enabled);
-            this.setState({
-                videoActive: !this.state.videoActive
-            });
+            if (currentPeerStream && currentPeerStream.getVideoTracks()[0]) {
+                currentPeerStream.getVideoTracks()[0].enabled = !(currentPeerStream.getVideoTracks()[0].enabled);
+                this.setState({
+                    videoActive: !this.state.videoActive
+                });
+            }
         }
     }
 
@@ -87,7 +89,7 @@ export default class VideoChat extends React.Component<VideoChatProps, VideoChat
                     <div className='menu-item menu-video-icon' onClick={() => this.toggleMic()}>{this.state.micActive ?
                         <FaMicrophoneAlt /> :
                         <FaMicrophoneAltSlash />}</div>
-                    <div className='menu-item menu-video-icon' onClick={() => this.toggleVideo()}>{this.state.videoActive ?
+                    <div className={`menu-item menu-video-icon ${this.state.screenShare ? 'disabled' : ''}`} onClick={() => this.toggleVideo()}>{this.state.videoActive ?
                         <FaVideo /> : <FaVideoSlash />} </div>
                     <div className='menu-item menu-video-icon' onClick={() => this.toggleScreenShare()}>{this.state.screenShare ?
                         <MdStopScreenShare /> : <MdScreenShare />} </div>
