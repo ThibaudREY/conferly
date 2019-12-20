@@ -1,7 +1,8 @@
 import React from "react";
 import { Component } from "react";
 import ToolBarItem from "../../../../Models/toolbar-item.model";
-import { FaPlus } from 'react-icons/fa';
+import { FaPlus, FaShareAlt } from 'react-icons/fa';
+import { toast } from "react-toastify";
 
 import './index.css';
 
@@ -11,6 +12,16 @@ interface ToolBarItemProps {
 }
 
 export default class ToolBarItemComponent extends Component<ToolBarItemProps, {}> {
+
+    private async copyToClipboard() {
+
+        try {
+            await navigator.clipboard.writeText(document.location.href);
+            toast('Link copied to clipboard !', { type: 'success' })
+        } catch (err) {
+            toast('Failed copying to clipboard', { type: 'error' })
+        }
+    }
 
     render() {
 
@@ -25,11 +36,16 @@ export default class ToolBarItemComponent extends Component<ToolBarItemProps, {}
 
                 })}
 
-                < div className="toolbar-item text-center" >
+                <div className="toolbar-item text-center" onClick={() => this.copyToClipboard()}>
+                    <div className="toolbar-item-icon">
+                        <FaShareAlt />
+                    </div>
+                </div>
+                <div className="toolbar-item text-center">
                     <div className="toolbar-item-icon">
                         <FaPlus />
                     </div>
-                </div >
+                </div>
             </div>
         );
     }
