@@ -1,14 +1,15 @@
-import React, { Component } from 'react';
-import CanvasDraw from 'react-canvas-draw';
-import CommandService from '../../../Services/Command/command.service';
-import { Commands } from '../../../Services/Command/Commands/commands.enum';
+import React, { Component }          from 'react';
+import CanvasDraw                    from 'react-canvas-draw';
+import CommandService                from '../../../Services/Command/command.service';
+import { Commands }                  from '../../../Services/Command/Commands/commands.enum';
 import { CirclePicker, ColorResult } from 'react-color';
-import update from 'react-addons-update';
+import update                        from 'react-addons-update';
 import './index.css';
-import { Slider } from 'react-compound-slider';
-import Handles from 'react-compound-slider/Handles';
-import { FaEraser, MdClear } from 'react-icons/all';
-import { injector } from '../../..';
+import { Slider }                    from 'react-compound-slider';
+import Handles                       from 'react-compound-slider/Handles';
+import { FaEraser, MdClear }         from 'react-icons/all';
+import { injector }                  from '../../..';
+import { BehaviorSubject }           from 'rxjs';
 
 interface BoardProps {
     visible: boolean
@@ -19,6 +20,8 @@ interface BoardState {
     size: number
 }
 
+export const board = new BehaviorSubject<any>({});
+
 export default class Board extends Component<BoardProps, BoardState> {
 
     readonly state = {
@@ -26,24 +29,23 @@ export default class Board extends Component<BoardProps, BoardState> {
         size: 5
     };
 
-    private canvasDraw: any;
     private commandService: CommandService = injector.get(CommandService);
 
     constructor(props: BoardProps) {
         super(props);
 
         this.commandService.register(Commands.BOARD_UPDATE, (self: Board, data: string) => {
-            this.canvasDraw.loadSaveData(data.substr(30), true);
+            board.value.loadSaveData(data.substr(30), true);
         });
     }
 
     private draw() {
-        this.commandService.broadcast(Commands.BOARD_UPDATE, this.canvasDraw.getSaveData())
+        this.commandService.broadcast(Commands.BOARD_UPDATE, board.value.getSaveData())
     }
 
     private clear() {
-        this.canvasDraw.clear();
-        this.commandService.broadcast(Commands.BOARD_UPDATE, this.canvasDraw.getSaveData())
+        board.value.clear();
+        this.commandService.broadcast(Commands.BOARD_UPDATE, board.value.getSaveData())
     }
 
     private colorChange(color: ColorResult) {
@@ -155,7 +157,7 @@ export default class Board extends Component<BoardProps, BoardState> {
                         <CanvasDraw hideGrid={true} canvasHeight='70vh' canvasWidth='100vw'
                             brushColor={color}
                             brushRadius={size}
-                            ref={(canvasDraw: any) => this.canvasDraw = canvasDraw} />
+                            ref={(canvasDraw: any) => board.next(canvasDraw)} />
                     </div>
                 </div> : null
         );
