@@ -1,7 +1,7 @@
 import './index.css'
 import React, { RefObject } from 'react';
-import Video                     from '../util/Video';
-import update                                      from 'react-addons-update';
+import Video from '../util/Video';
+import update from 'react-addons-update';
 import { FaExpand, FaCompress, FaExpandArrowsAlt } from 'react-icons/fa';
 
 interface VideoChatBubbleProps {
@@ -32,15 +32,17 @@ export default class VideoChatBubble extends React.Component<VideoChatBubbleProp
         this.videoRef = React.createRef<Video>();
     }
 
+    componentDidUpdate(prevProps: VideoChatBubbleProps, prevState: VideoChatBubbleState) {
+        if (prevProps.stream !== this.props.stream) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     private toggleFullScreen() {
         this.setState({
             fullscreen: !this.state.fullscreen
-        })
-    }
-
-    private reduce() {
-        this.setState({
-            fullscreen: update(this.state.fullscreen, { $set: false })
         })
     }
 
@@ -57,12 +59,12 @@ export default class VideoChatBubble extends React.Component<VideoChatBubbleProp
             <div className={fullscreen ? 'video-fullscreen-wrapper' : 'video-small-wrapper'}>
                 <div className={fullscreen ? 'overlay overlay-fullscreen' : 'overlay overlay-small'} onClick={() => this.toggleFullScreen()}>
                     <div className="video-icon">
-                        {fullscreen ? <FaCompress/> : <FaExpand/>}
+                        {fullscreen ? <FaCompress /> : <FaExpand />}
                     </div>
                 </div>
                 {fullscreen ? <div className='overlay overlay-fullscreen' onClick={() => this.videoRef.current!.requestFullscreen()}>
                     <div className="video-icon">
-                        <FaExpandArrowsAlt/>
+                        <FaExpandArrowsAlt />
                     </div>
                 </div> : null}
                 {video}

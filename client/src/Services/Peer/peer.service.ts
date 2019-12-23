@@ -9,19 +9,19 @@ import JoinAcknowledgement from '../../Models/join-acknowledgement.model';
 import { BehaviorSubject } from 'rxjs';
 import { Commands } from '../Command/Commands/commands.enum';
 import { getSignalingData } from './utils';
-import CommandService             from '../Command/command.service';
+import CommandService from '../Command/command.service';
 import openConnectionsAsInitiator from '../Command/Commands/openConnectionsAsInitiator';
-import { error }                  from '../error-modal.service';
-import { Injectable }             from 'injection-js';
-import StreamManagerService       from '../Manager/stream-manager.service';
-import { injector }               from '../../index';
-import ChatManagerService         from '../Manager/ChatManagerService';
-import onJoinMessage              from '../Command/Commands/onJoinMessage';
-import ChatMessage                from '../../Models/chat-message.model';
-import { MessageType }            from '../../Enums/message-type.enum';
-import { splashSreen }            from '../../Components/Splash';
-import { User }                   from '../../Models/user.model';
-import { board }                  from '../../Components/Meeting/Board';
+import { error } from '../error-modal.service';
+import { Injectable } from 'injection-js';
+import StreamManagerService from '../Manager/stream-manager.service';
+import { injector } from '../../index';
+import ChatManagerService from '../Manager/ChatManagerService';
+import onJoinMessage from '../Command/Commands/onJoinMessage';
+import ChatMessage from '../../Models/chat-message.model';
+import { MessageType } from '../../Enums/message-type.enum';
+import { splashSreen } from '../../Components/Splash';
+import { User } from '../../Models/user.model';
+import { board } from '../../Components/Meeting/Board';
 
 export const peers = new BehaviorSubject(new Map());
 
@@ -40,7 +40,7 @@ export default class PeerService {
 
     private signalingData: any;
 
-    private _peerConnections: Map<string, {instance: Peer.Instance, user: User}>;
+    private _peerConnections: Map<string, { instance: Peer.Instance, user: User }>;
 
     private readonly _server: SocketIOClient.Socket;
 
@@ -51,7 +51,7 @@ export default class PeerService {
     private streamManagerService: StreamManagerService = injector.get(StreamManagerService);
 
     constructor() {
-        this._peerConnections = new Map<string, {instance: Peer.Instance, user: User}>();
+        this._peerConnections = new Map<string, { instance: Peer.Instance, user: User }>();
         this.currentPeerConnection = new Peer();
         this._server = io(process.env.REACT_APP_SIGNALING_SERVER as string);
         this._chatManagerService = injector.get(ChatManagerService);
@@ -140,7 +140,7 @@ export default class PeerService {
             this._server.emit('join-ack', new JoinAcknowledgement(await signalingData, roomId, peerId), this.peerId);
 
             if (peerId) {
-                this.peerConnections.set(peerId, {instance: this.currentPeerConnection, user: new User()});
+                this.peerConnections.set(peerId, { instance: this.currentPeerConnection, user: new User() });
                 this.updateObservable();
             }
         }
@@ -181,7 +181,7 @@ export default class PeerService {
             if (this.peerConnections.get(senderId)) {
                 user = this.peerConnections.get(senderId)!.user;
             }
-            this.peerConnections.set(senderId, {instance: pc, user});
+            this.peerConnections.set(senderId, { instance: pc, user });
             this.updateObservable();
         })
     }
@@ -212,7 +212,7 @@ export default class PeerService {
         if (sessionInitiator) {
             this.registerInitiatorActions(this.currentPeerConnection);
             this.registerActions(this.currentPeerConnection);
-            this.peerConnections.set(emitterPeerId, {instance: this.currentPeerConnection, user: new User()});
+            this.peerConnections.set(emitterPeerId, { instance: this.currentPeerConnection, user: new User() });
         }
 
         if (peerId) {
@@ -227,23 +227,26 @@ export default class PeerService {
         this.peers = data.peers;
     }
 
-    private onLeaving(peerId: string) {
-        const pc = new Map<string, {instance: SimplePeer.Instance, user: User}>();
+    private async onLeaving(peerId: string) {
+        const username = this.peerConnections.get(peerId)!.user.username;
+        const byeMessage = new ChatMessage(peerId, peerId, `${username} has left the conference`, MessageType.STATUS_MESSAGE);
+        this.commandService.send(this.currentPeerConnection, peerId, Commands.JOIN_MESSAGE, JSON.stringify(byeMessage));
+        this._chatManagerService.addMessage(byeMessage);
+
+        const peerStream = await this.streamManagerService.streams.get(peerId);
+        if (peerStream) {
+            this.streamManagerService.stopMediaStream(peerStream);
+            this.streamManagerService.unsubscribePeerStream(peerId);
+        }
+
+        this.peerConnections.get(peerId)!.instance.destroy();
+        const pc = new Map<string, { instance: SimplePeer.Instance, user: User }>();
         for (let entry of this.peerConnections.entries()) {
             if (entry[0] !== peerId)
                 pc.set(entry[0], entry[1]);
         }
-        const username = this.peerConnections.get(peerId)!.user.username;
+
         this.peerConnections = pc;
-        const byeMessage = new ChatMessage(peerId, peerId, `${username} has left the conference`, MessageType.STATUS_MESSAGE);
-        this.commandService.send(this.currentPeerConnection, peerId, Commands.JOIN_MESSAGE, JSON.stringify(byeMessage));
-        this.streamManagerService.unsubscribePeerStream(peerId);
-        this._chatManagerService.addMessage(byeMessage);
-
-        const videoTrack = this.streamManagerService.currentPeerMediaStream.getTracks()[0];
-        if (videoTrack)
-            videoTrack.stop();
-
         this.updateObservable();
     }
 
@@ -251,11 +254,11 @@ export default class PeerService {
         peers.next(this._peerConnections)
     }
 
-    get peerConnections(): Map<string, {instance: SimplePeer.Instance, user: User}> {
+    get peerConnections(): Map<string, { instance: SimplePeer.Instance, user: User }> {
         return this._peerConnections;
     }
 
-    set peerConnections(value: Map<string, {instance: SimplePeer.Instance, user: User}>) {
+    set peerConnections(value: Map<string, { instance: SimplePeer.Instance, user: User }>) {
         this._peerConnections = value;
     }
 

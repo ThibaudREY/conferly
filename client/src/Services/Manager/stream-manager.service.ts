@@ -1,8 +1,8 @@
-import { Injectable }      from 'injection-js';
+import { Injectable } from 'injection-js';
 import { BehaviorSubject } from 'rxjs';
-import { peers }           from '../Peer/peer.service';
-import { toast }           from 'react-toastify';
-import { User }            from '../../Models/user.model';
+import { peers } from '../Peer/peer.service';
+import { toast } from 'react-toastify';
+import { User } from '../../Models/user.model';
 
 export const streams = new BehaviorSubject(new Map<string, Promise<MediaStream>>());
 
@@ -29,7 +29,7 @@ export default class StreamManagerService {
         try {
             ms = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
         } catch (e) {
-            toast('It seems we don\'t have permission to access your camera, you may want to allow it to use the video chat', {type: 'error', autoClose: false, toastId: 'camera'});
+            toast('It seems we don\'t have permission to access your camera, you may want to allow it to use the video chat', { type: 'error', autoClose: false, toastId: 'camera' });
         }
         return ms;
     }
@@ -78,7 +78,7 @@ export default class StreamManagerService {
             try {
                 const screen = (await (navigator.mediaDevices as any).getDisplayMedia({ video: true, audio: true }) as MediaStream);
 
-                peers.value.forEach((peer: {instance: any, user: User}) => {
+                peers.value.forEach((peer: { instance: any, user: User }) => {
 
                     try {
                         peer.instance.replaceTrack(this._currentPeerMediaStream.getVideoTracks()[0], screen.getVideoTracks()[0], this._currentPeerMediaStream);
@@ -97,7 +97,7 @@ export default class StreamManagerService {
         } else {
             const video = await this.getUserMediaStream();
 
-            peers.value.forEach((peer: {instance: any, user: User}) => {
+            peers.value.forEach((peer: { instance: any, user: User }) => {
 
                 try {
                     peer.instance.replaceTrack(this._currentPeerMediaStream.getVideoTracks()[0], video.getVideoTracks()[0], this._currentPeerMediaStream);
@@ -108,6 +108,18 @@ export default class StreamManagerService {
 
             this._currentPeerMediaStream.removeTrack(this.currentPeerMediaStream.getVideoTracks()[0]);
             this._currentPeerMediaStream.addTrack(video.getVideoTracks()[0]);
+        }
+    }
+
+    /**
+     * Stop all streaming tracks
+     * @param {MediaStream} media Media Stream
+     */
+    public stopMediaStream(media: MediaStream) {
+        if (media) {
+            media.getTracks().forEach((track: MediaStreamTrack) => {
+                track.stop();
+            });
         }
     }
 
