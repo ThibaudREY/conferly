@@ -1,18 +1,18 @@
-import React, { Component }          from 'react';
-import CanvasDraw                    from 'react-canvas-draw';
-import CommandService                from '../../../Services/Command/command.service';
-import { Commands }                  from '../../../Services/Command/Commands/commands.enum';
+import React, { Component } from 'react';
+import CanvasDraw from 'react-canvas-draw';
+import CommandService from '../../../Services/Command/command.service';
+import { Commands } from '../../../Services/Command/Commands/commands.enum';
 import { CirclePicker, ColorResult } from 'react-color';
-import update                        from 'react-addons-update';
+import update from 'react-addons-update';
 import './index.css';
-import { Slider }                    from 'react-compound-slider';
-import Handles                       from 'react-compound-slider/Handles';
-import { FaEraser, MdClear }         from 'react-icons/all';
-import { injector }                  from '../../..';
-import { BehaviorSubject }           from 'rxjs';
+import { Slider } from 'react-compound-slider';
+import Handles from 'react-compound-slider/Handles';
+import { FaEraser, MdClear } from 'react-icons/all';
+import { injector } from '../../..';
+import { BehaviorSubject } from 'rxjs';
 
 interface BoardProps {
-    visible: boolean
+    visible: boolean,
 }
 
 interface BoardState {
@@ -154,7 +154,7 @@ export default class Board extends Component<BoardProps, BoardState> {
 
 
                     <div className='row' onMouseUp={() => this.draw()}>
-                        <CanvasDraw hideGrid={true} canvasHeight='70vh' canvasWidth='100vw'
+                        <CanvasDraw hideGrid={true} canvasHeight='65vh' canvasWidth='100vw'
                             brushColor={color}
                             brushRadius={size}
                             ref={(canvasDraw: any) => board.next(canvasDraw)} />

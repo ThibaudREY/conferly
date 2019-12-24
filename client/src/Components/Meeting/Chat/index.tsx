@@ -21,7 +21,8 @@ import { contentTypes } from '../../../Utils/contentTypes';
 import { splashSreen } from "../../Splash";
 
 interface ChatProps {
-
+    className?: string
+    onClick?: Function
 }
 
 interface ChatState {
@@ -139,9 +140,11 @@ export default class Chat extends Component<ChatProps, ChatState> {
 
     render() {
 
+        const {className, onClick} = this.props;
+
         return (
-            <div className="chat">
-                <div className="chat-header">
+            <div className={`chat ${className}`}>
+                <div onClick={e => onClick ? onClick(e) : {}} className="chat-header">
                     <div className="row">
                         <div className="col-6">
                             <h6 className="text-white text-left pt-2">Conference</h6>
