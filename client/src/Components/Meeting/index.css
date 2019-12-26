@@ -1,3 +1,8 @@
+.retracted {
+    bottom: -188px !important;
+    cursor: pointer;
+}
+
 .fixed-bottom {
     position: fixed;
     bottom: 0;
