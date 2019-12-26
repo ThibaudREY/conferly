@@ -24,10 +24,10 @@ export default class StreamManagerService {
     /**
      * Get user media stream
      */
-    public async getUserMediaStream() {
+    public async getUserMediaStream(constraints: {video: boolean, audio: boolean} = {video: true, audio: true}) {
         let ms = new MediaStream();
         try {
-            ms = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+            ms = await navigator.mediaDevices.getUserMedia(constraints);
         } catch (e) {
             toast('It seems we don\'t have permission to access your camera, you may want to allow it to use the video chat', { type: 'error', autoClose: false, toastId: 'camera' });
         }

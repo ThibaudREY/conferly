@@ -22,6 +22,7 @@ interface VideoChatState {
     micActive: boolean
     videoActive: boolean
     screenShare: boolean
+    self: Promise<MediaStream>
 }
 
 export default class VideoChat extends React.Component<VideoChatProps, VideoChatState> {
@@ -29,14 +30,15 @@ export default class VideoChat extends React.Component<VideoChatProps, VideoChat
     readonly state = {
         micActive: true,
         videoActive: true,
-        screenShare: false
+        screenShare: false,
+        self: new Promise<MediaStream>(() => {})
     };
 
     private streamManagerService: StreamManagerService = injector.get(StreamManagerService);
-    private self?: Promise<MediaStream>;
 
-    async componentDidMount() {
-        this.self = navigator.mediaDevices.getUserMedia({ video: true, audio: false });
+    constructor(props: VideoChatProps) {
+        super(props);
+        this.state.self = this.streamManagerService.getUserMediaStream({video: true, audio: false})
     }
 
     private async toggleMic() {
@@ -89,7 +91,7 @@ export default class VideoChat extends React.Component<VideoChatProps, VideoChat
 
     render() {
 
-        const streams = this.props.streams.concat([this.self!]);
+        const {self} = this.state;
 
         return (
             <div className='video-chat'>
@@ -105,7 +107,7 @@ export default class VideoChat extends React.Component<VideoChatProps, VideoChat
                         <MdStopScreenShare/> : <MdScreenShare/>} </div>
                 </div>
                 {
-                    streams.map((stream: Promise<MediaStream>, index: number) => <VideoChatBubble index={index}
+                    this.props.streams.concat([self]).map((stream: Promise<MediaStream>, index: number) => <VideoChatBubble index={index}
                                                                                                   stream={stream}
                                                                                                   key={index}/>)
                 }
