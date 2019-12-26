@@ -10,12 +10,14 @@ import PeerService from './Services/Peer/peer.service';
 import StreamManagerService from './Services/Manager/stream-manager.service';
 import CommandService from './Services/Command/command.service';
 import ChatManagerService from './Services/Manager/ChatManagerService';
+import AppService from './Services/Manager/app-service.service';
 
 export const injector = ReflectiveInjector.resolveAndCreate([
     CommandService,
     PeerService,
     StreamManagerService,
     ChatManagerService,
+    AppService
 ])
 
 ReactDOM.render(<App />, document.getElementById('root'));

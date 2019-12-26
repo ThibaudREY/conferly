@@ -7,6 +7,7 @@ import Meeting from './Components/Meeting';
 import ErrorModal from './Services/error-modal.service';
 import DestineeModal from './Components/Meeting/FileDrop/file-destinee-modal';
 import SplashScreen from './Components/Splash';
+import ServicesKeyModal from './Components/Meeting/ServicesModal';
 
 function App() {
     return (
@@ -22,6 +23,7 @@ function App() {
             </Router>
 
             <DestineeModal />
+            <ServicesKeyModal />
             <ErrorModal />
 
         </div>
