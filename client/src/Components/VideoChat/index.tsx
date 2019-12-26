@@ -1,17 +1,17 @@
 import './index.css';
-import React from 'react';
-import VideoChatBubble from './VideoChatBubble';
+import React                from 'react';
+import VideoChatBubble      from './VideoChatBubble';
 import {
     FaMicrophoneAlt,
     FaMicrophoneAltSlash,
     FaVideo,
     FaVideoSlash
-} from 'react-icons/fa';
+}                           from 'react-icons/fa';
 import {
     MdScreenShare,
     MdStopScreenShare
-} from "react-icons/md";
-import { injector } from '../../index';
+}                           from "react-icons/md";
+import { injector }         from '../../index';
 import StreamManagerService from '../../Services/Manager/stream-manager.service';
 
 interface VideoChatProps {
@@ -33,6 +33,11 @@ export default class VideoChat extends React.Component<VideoChatProps, VideoChat
     };
 
     private streamManagerService: StreamManagerService = injector.get(StreamManagerService);
+    private self?: Promise<MediaStream>;
+
+    async componentDidMount() {
+        this.self = navigator.mediaDevices.getUserMedia({ video: true, audio: false });
+    }
 
     private async toggleMic() {
 
@@ -83,19 +88,26 @@ export default class VideoChat extends React.Component<VideoChatProps, VideoChat
     }
 
     render() {
+
+        const streams = this.props.streams.concat([this.self!]);
+
         return (
             <div className='video-chat'>
                 <div className='video-chat-menu'>
                     <div className='menu-item menu-video-icon' onClick={() => this.toggleMic()}>{this.state.micActive ?
-                        <FaMicrophoneAlt /> :
-                        <FaMicrophoneAltSlash />}</div>
-                    <div className={`menu-item menu-video-icon ${this.state.screenShare ? 'disabled' : ''}`} onClick={() => this.toggleVideo()}>{this.state.videoActive ?
-                        <FaVideo /> : <FaVideoSlash />} </div>
-                    <div className='menu-item menu-video-icon' onClick={() => this.toggleScreenShare()}>{this.state.screenShare ?
-                        <MdStopScreenShare /> : <MdScreenShare />} </div>
+                        <FaMicrophoneAlt/> :
+                        <FaMicrophoneAltSlash/>}</div>
+                    <div className={`menu-item menu-video-icon ${this.state.screenShare ? 'disabled' : ''}`}
+                         onClick={() => this.toggleVideo()}>{this.state.videoActive ?
+                        <FaVideo/> : <FaVideoSlash/>} </div>
+                    <div className='menu-item menu-video-icon'
+                         onClick={() => this.toggleScreenShare()}>{this.state.screenShare ?
+                        <MdStopScreenShare/> : <MdScreenShare/>} </div>
                 </div>
                 {
-                    this.props.streams.map((stream: Promise<MediaStream>, index: number) => <VideoChatBubble index={index} stream={stream} key={index} />)
+                    streams.map((stream: Promise<MediaStream>, index: number) => <VideoChatBubble index={index}
+                                                                                                  stream={stream}
+                                                                                                  key={index}/>)
                 }
             </div>
         );
