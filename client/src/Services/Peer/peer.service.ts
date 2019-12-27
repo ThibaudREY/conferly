@@ -70,7 +70,7 @@ export default class PeerService {
                 error.next({ show: false, message: '', acknowledgable: false })
             });
             this.server.on('server-error', (message: string) => {
-                error.next({ message: message, show: true, acknowledgable: false })
+                setTimeout(() => error.next({ message: message, show: true, acknowledgable: false }));
             });
             this.server.on('leaving', (peerId: string) => this.onLeaving(peerId));
             this.server.on('offer-request', (request: JoinRequest) => this.onOfferRequest(request));
