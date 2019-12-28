@@ -4,5 +4,7 @@ export enum Commands {
     JOIN_MESSAGE = 'JOIN_MESSAGE________',
     WELCOME_MESSAGE = 'WELCOME_MESSAGE_____',
     BOARD_UPDATE = 'BOARD_UPDATE________',
-    FILE = 'FILE________________'
+    FILE = 'FILE________________',
+    SERVICE_UPDATE = 'SERVICE_UPDATE______',
+    SERVICE_ALL = 'SERVICE_ALL_________'
 }

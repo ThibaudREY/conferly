@@ -22,6 +22,8 @@ import { MessageType } from '../../Enums/message-type.enum';
 import { splashSreen } from '../../Components/Splash';
 import { User } from '../../Models/user.model';
 import { board } from '../../Components/Meeting/Board';
+import AppService, { appServices } from '../Manager/app-service.service';
+import { getAllServices } from '../Command/Commands/appServicesCommands';
 
 export const peers = new BehaviorSubject(new Map());
 
@@ -50,6 +52,8 @@ export default class PeerService {
 
     private streamManagerService: StreamManagerService = injector.get(StreamManagerService);
 
+    private appService: AppService = injector.get(AppService);
+
     constructor() {
         this._peerConnections = new Map<string, { instance: Peer.Instance, user: User }>();
         this.currentPeerConnection = new Peer();
@@ -57,6 +61,7 @@ export default class PeerService {
         this._chatManagerService = injector.get(ChatManagerService);
         this.commandService.register(Commands.OPEN_CNTS_AS_INIT, openConnectionsAsInitiator);
         this.commandService.register(Commands.JOIN_MESSAGE, onJoinMessage);
+        this.commandService.register(Commands.SERVICE_ALL, getAllServices);
 
         this.registerWsActions();
     }
@@ -153,6 +158,8 @@ export default class PeerService {
             setTimeout(() => {
                 const message: ChatMessage = new ChatMessage(this.peerId, this.username, `Welcome`, MessageType.STATUS_MESSAGE);
                 this.commandService.send(pc, this._peerId, Commands.WELCOME_MESSAGE, JSON.stringify(message));
+                console.log(appServices);
+                this.commandService.send(pc, this._peerId, Commands.SERVICE_ALL, JSON.stringify(Array.from(appServices.value.entries())));
                 this.commandService.broadcast(Commands.BOARD_UPDATE, board.value.getSaveData())
             }, 10000);
 

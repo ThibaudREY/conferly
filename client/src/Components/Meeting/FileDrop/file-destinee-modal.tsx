@@ -1,12 +1,12 @@
-import { BehaviorSubject }                         from 'rxjs';
-import Modal                                       from "react-awesome-modal";
+import { BehaviorSubject } from 'rxjs';
+import Modal from "react-awesome-modal";
 import React, { ChangeEvent, useEffect, useState } from 'react';
-import { peers }                                   from '../../../Services/Peer/peer.service';
-import SimplePeer                                  from 'simple-peer';
+import { peers } from '../../../Services/Peer/peer.service';
+import SimplePeer from 'simple-peer';
 import './index.css';
-import { FaCheck, FaPaperPlane, MdClose }          from 'react-icons/all';
-import { toast }                                   from 'react-toastify';
-import { User }                                    from '../../../Models/user.model';
+import { FaCheck, FaPaperPlane, MdClose } from 'react-icons/all';
+import { toast } from 'react-toastify';
+import { User } from '../../../Models/user.model';
 
 
 export const destinee = new BehaviorSubject({
@@ -64,16 +64,16 @@ const DestineeModal: React.FC = () => {
     return (
         <Modal visible={showModal} width="400" height="300" effect="fadeInUp" onClickAway={() => closeModal()}>
             <div className='destinee-modal-header'>
-                <MdClose className='error-modal-close' onClick={() => closeModal()}/>
+                <MdClose className='error-modal-close' onClick={() => closeModal()} />
                 Send these file(s) to...
             </div>
             <div className='container row ml-2'>
                 {
-                    Array.from(peers.value.entries()).map((entry: [string, {instance: SimplePeer.Instance, user: User}]) => {
+                    Array.from(peers.value.entries()).map((entry: [string, { instance: SimplePeer.Instance, user: User }]) => {
                         return <div className="col-6 mt-3 checkbox" key={entry[0]}>
-                            <input type="checkbox" id={entry[0]} onChange={e => addDestinee(e, entry[0])}/>
-                            <label htmlFor={entry[0]} onClick={ e => e.stopPropagation() }>
-                                <div><FaCheck/></div>
+                            <input type="checkbox" id={entry[0]} onChange={e => addDestinee(e, entry[0])} />
+                            <label htmlFor={entry[0]} onClick={e => e.stopPropagation()}>
+                                <div><FaCheck /></div>
                                 {entry[1].user.username}
                             </label>
                         </div>
@@ -81,7 +81,7 @@ const DestineeModal: React.FC = () => {
                 }
             </div>
             <div className='destinee-modal-footer'>
-                <button className='btn btn-primary' onClick={() => send()}><FaPaperPlane/> Send</button>
+                <button className='btn btn-primary' onClick={() => send()}><FaPaperPlane /> Send</button>
             </div>
         </Modal>
     );
