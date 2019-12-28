@@ -1,7 +1,6 @@
 import './index.css'
 import React, { RefObject } from 'react';
 import Video from '../util/Video';
-import update from 'react-addons-update';
 import { FaExpand, FaCompress, FaExpandArrowsAlt } from 'react-icons/fa';
 
 interface VideoChatBubbleProps {
