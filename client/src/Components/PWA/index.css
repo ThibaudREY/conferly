@@ -1,0 +1,36 @@
+.pwa-install-footer {
+    z-index: 99999;
+    width: 100vw;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    background-color: white;
+    box-shadow: 0 -10vh 150px 200px rgba(0,0,0,0.46);
+}
+
+.pwa-button {
+    cursor: pointer;
+    background-color: #1D8AFA;
+    height: 25%;
+    color: white;
+    font-weight: bold;
+    display: flex;
+    justify-content: center;
+    align-content: center;
+    flex-direction: column;
+}
+
+.pwa-logo {
+    max-width: 12vw;
+}
+
+.pwa-logo img {
+    max-width: 100%;
+    max-height:100%;
+    display: inline-block;
+    margin: 0 auto;
+    vertical-align: middle;
+    position: relative;
+    top: 50%;
+    transform: translateY(-50%) scale(.75);
+}
