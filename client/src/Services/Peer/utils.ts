@@ -1,9 +1,10 @@
-import Peer                 from 'simple-peer';
-import PeerService          from './peer.service';
-import ChatManagerService   from '../Manager/ChatManagerService';
-import { injector }         from '../../index';
+import Peer from 'simple-peer';
+import freeice from 'freeice';
+import PeerService from './peer.service';
+import ChatManagerService from '../Manager/ChatManagerService';
+import { injector } from '../../index';
 import StreamManagerService from '../Manager/stream-manager.service';
-import { User }             from '../../Models/user.model';
+import { User } from '../../Models/user.model';
 
 export async function getSignalingData(peerConnection: Peer.Instance) {
     return new Promise<Peer.SignalData>((resolve, reject) => {
@@ -28,7 +29,8 @@ export async function createExistingPeersOffers(self: PeerService, peers: { [key
                 let peerConnection = new Peer({
                     initiator: true,
                     trickle: false,
-                    stream: streamManagerService.currentPeerMediaStream
+                    stream: streamManagerService.currentPeerMediaStream,
+                    config: { iceServers: freeice() }
                 });
 
                 peerConnection.on('stream', (stream: Promise<MediaStream>) => {
@@ -38,7 +40,7 @@ export async function createExistingPeersOffers(self: PeerService, peers: { [key
                 let signalingData = await getSignalingData(peerConnection);
                 set.splice(1, 1, signalingData);
 
-                self.peerConnections.set(set[0], {instance: peerConnection, user: new User()});
+                self.peerConnections.set(set[0], { instance: peerConnection, user: new User() });
                 self.updateObservable();
                 return set
             })

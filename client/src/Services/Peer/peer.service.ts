@@ -4,6 +4,7 @@ import uid from 'uid-safe';
 import Peer from 'simple-peer';
 import SimplePeer from 'simple-peer';
 import io from 'socket.io-client';
+import freeice from 'freeice';
 import ClientOffer from '../../Models/client-offer.model';
 import JoinAcknowledgement from '../../Models/join-acknowledgement.model';
 import { BehaviorSubject } from 'rxjs';
@@ -120,7 +121,8 @@ export default class PeerService {
         this.currentPeerConnection = new Peer({
             initiator: false,
             trickle: false,
-            stream: this.streamManagerService.currentPeerMediaStream
+            stream: this.streamManagerService.currentPeerMediaStream,
+            config: { iceServers: freeice() }
         });
 
         this.currentPeerConnection.on('stream', (stream: Promise<MediaStream>) => {
@@ -203,7 +205,8 @@ export default class PeerService {
         this.currentPeerConnection = new Peer({
             initiator: true,
             trickle: false,
-            stream: this.streamManagerService.currentPeerMediaStream
+            stream: this.streamManagerService.currentPeerMediaStream,
+            config: { iceServers: freeice() }
         });
 
         this.currentPeerConnection.on('stream', (stream: Promise<MediaStream>) => {
