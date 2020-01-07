@@ -52,7 +52,7 @@ export default class Video extends React.Component<VideoProps, {}> {
             {children}
         </video>;
 
-        return this.video.srcObject && (this.video.srcObject as MediaStream).getVideoTracks()[0].enabled ? (
+        return this.video.srcObject && (this.video.srcObject as MediaStream).getVideoTracks()[0] && (this.video.srcObject as MediaStream).getVideoTracks()[0].enabled ? (
             <div>
                 {video}
             </div>

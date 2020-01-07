@@ -29,7 +29,7 @@ export async function createExistingPeersOffers(self: PeerService, peers: { [key
                 let peerConnection = new Peer({
                     initiator: true,
                     trickle: false,
-                    stream: streamManagerService.currentPeerMediaStream,
+                    stream: await streamManagerService.getCurrentPeerMediaStream(),
                     config: { iceServers: freeice() }
                 });
 

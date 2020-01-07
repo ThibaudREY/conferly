@@ -1,4 +1,4 @@
-import { Injectable } from 'injection-js';
+import { Injectable }      from 'injection-js';
 import { BehaviorSubject } from 'rxjs';
 import { peers } from '../Peer/peer.service';
 import { toast } from 'react-toastify';
@@ -78,16 +78,16 @@ export default class StreamManagerService {
             try {
                 const screen = (await (navigator.mediaDevices as any).getDisplayMedia({ video: true, audio: true }) as MediaStream);
 
-                peers.value.forEach((peer: { instance: any, user: User }) => {
+                peers.value.forEach(async (peer: { instance: any, user: User }) => {
 
                     try {
-                        peer.instance.replaceTrack(this._currentPeerMediaStream.getVideoTracks()[0], screen.getVideoTracks()[0], this._currentPeerMediaStream);
+                        peer.instance.replaceTrack((await this.getCurrentPeerMediaStream()).getVideoTracks()[0], screen.getVideoTracks()[0], (await this.getCurrentPeerMediaStream()));
                     } catch (err) {
                         console.log(err);
                     }
                 });
 
-                this._currentPeerMediaStream.removeTrack(this.currentPeerMediaStream.getVideoTracks()[0]);
+                this._currentPeerMediaStream.removeTrack((await this.getCurrentPeerMediaStream()).getVideoTracks()[0]);
                 this._currentPeerMediaStream.addTrack(screen.getVideoTracks()[0]);
 
             } catch (err) {
@@ -97,16 +97,16 @@ export default class StreamManagerService {
         } else {
             const video = await this.getUserMediaStream();
 
-            peers.value.forEach((peer: { instance: any, user: User }) => {
+            peers.value.forEach(async (peer: { instance: any, user: User }) => {
 
                 try {
-                    peer.instance.replaceTrack(this._currentPeerMediaStream.getVideoTracks()[0], video.getVideoTracks()[0], this._currentPeerMediaStream);
+                    peer.instance.replaceTrack((await this.getCurrentPeerMediaStream()).getVideoTracks()[0], video.getVideoTracks()[0], (await this.getCurrentPeerMediaStream()));
                 } catch (err) {
                     console.log(err);
                 }
             });
 
-            this._currentPeerMediaStream.removeTrack(this.currentPeerMediaStream.getVideoTracks()[0]);
+            this._currentPeerMediaStream.removeTrack((await this.getCurrentPeerMediaStream()).getVideoTracks()[0]);
             this._currentPeerMediaStream.addTrack(video.getVideoTracks()[0]);
         }
     }
@@ -137,11 +137,12 @@ export default class StreamManagerService {
         streams.next(this._mediaStreams);
     }
 
-    public get currentPeerMediaStream(): MediaStream {
-        return this._currentPeerMediaStream;
-    }
+    public async getCurrentPeerMediaStream(): Promise<MediaStream> {
 
-    public set currentPeerMediaStream(value: MediaStream) {
-        this._currentPeerMediaStream = value;
+        if (this._currentPeerMediaStream.getTracks().length < 1) {
+            this._currentPeerMediaStream = await this.getUserMediaStream();
+        }
+
+        return this._currentPeerMediaStream;
     }
 }
