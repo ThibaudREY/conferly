@@ -114,14 +114,10 @@ export default class PeerService {
             splashSreen.next({ show: true, message: 'Receiving response access' });
         }
 
-        if (this.streamManagerService.currentPeerMediaStream.getTracks().length < 1) {
-            this.streamManagerService.currentPeerMediaStream = await this.streamManagerService.getUserMediaStream();
-        }
-
         this.currentPeerConnection = new Peer({
             initiator: false,
             trickle: false,
-            stream: this.streamManagerService.currentPeerMediaStream,
+            stream: await this.streamManagerService.getCurrentPeerMediaStream(),
             config: { iceServers: freeice() }
         });
 
@@ -197,15 +193,11 @@ export default class PeerService {
 
     private async onOfferRequest(request: JoinRequest) {
 
-        if (this.streamManagerService.currentPeerMediaStream.getTracks().length < 1) {
-            this.streamManagerService.currentPeerMediaStream = await this.streamManagerService.getUserMediaStream();
-        }
-
         delete this.currentPeerConnection;
         this.currentPeerConnection = new Peer({
             initiator: true,
             trickle: false,
-            stream: this.streamManagerService.currentPeerMediaStream,
+            stream: await this.streamManagerService.getCurrentPeerMediaStream(),
             config: { iceServers: freeice() }
         });
 

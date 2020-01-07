@@ -38,12 +38,12 @@ export default class VideoChat extends React.Component<VideoChatProps, VideoChat
 
     constructor(props: VideoChatProps) {
         super(props);
-        this.state.self = this.streamManagerService.getUserMediaStream({video: true, audio: false})
+        this.state.self = this.streamManagerService.getCurrentPeerMediaStream()
     }
 
     private async toggleMic() {
 
-        let currentPeerStream: MediaStream = this.streamManagerService.currentPeerMediaStream;
+        let currentPeerStream: MediaStream = await this.streamManagerService.getCurrentPeerMediaStream();
 
         if (currentPeerStream && currentPeerStream.getAudioTracks()[0]) {
             currentPeerStream.getAudioTracks()[0].enabled = !(currentPeerStream.getAudioTracks()[0].enabled);
@@ -54,9 +54,8 @@ export default class VideoChat extends React.Component<VideoChatProps, VideoChat
     }
 
     private async toggleVideo() {
-
         if (!this.state.screenShare) {
-            let currentPeerStream: MediaStream = this.streamManagerService.currentPeerMediaStream;
+            let currentPeerStream: MediaStream = await this.streamManagerService.getCurrentPeerMediaStream();
 
             if (currentPeerStream && currentPeerStream.getVideoTracks()[0]) {
                 currentPeerStream.getVideoTracks()[0].enabled = !(currentPeerStream.getVideoTracks()[0].enabled);
@@ -69,7 +68,7 @@ export default class VideoChat extends React.Component<VideoChatProps, VideoChat
 
     private async toggleScreenShare() {
 
-        let currentPeerStream: MediaStream = this.streamManagerService.currentPeerMediaStream;
+        let currentPeerStream: MediaStream = await this.streamManagerService.getCurrentPeerMediaStream();
 
         if (currentPeerStream && currentPeerStream.getVideoTracks()[0]) {
             this.setState(prevState => ({
