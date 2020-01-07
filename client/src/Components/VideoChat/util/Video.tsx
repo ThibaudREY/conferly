@@ -22,7 +22,10 @@ export default class Video extends React.Component<VideoProps, {}> {
         const prevStream = await prevProps.stream;
         const currentStream = await this.props.stream;
 
-        this.video.srcObject = currentStream;
+        if (this.video) {
+            this.video.srcObject = currentStream;
+        }
+
         if (prevStream !== currentStream) {
             return true;
         } else {
