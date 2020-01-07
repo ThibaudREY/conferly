@@ -1,0 +1,76 @@
+.file-explorer-navbar-wrapper {
+    display: flex;
+    flex-flow: column;
+    align-items: stretch;
+    background-color: #c9dae5;
+    margin-left: 0 !important;
+}
+
+.branches {
+    max-width: 15%;
+    justify-content: flex-start !important;
+    overflow-y: scroll;
+    overflow-x: hidden;
+}
+
+.branches::-webkit-scrollbar {
+    width: 6px;
+    background-color: #F5F5F5;
+}
+
+.branches::-webkit-scrollbar-thumb {
+    background-color: rgb(74, 0, 224);;
+}
+
+.branches::-webkit-scrollbar-track {
+    -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+    background-color: #F5F5F5;
+}
+
+.file-explorer::-webkit-scrollbar {
+    display: none;
+}
+.file-explorer::-webkit-scrollbar-track {
+    display: none;
+}
+
+.file-explorer-navbar {
+    display: flex;
+    align-items: center;
+    background-color: #c9dae5;
+}
+
+.icon {
+    display: flex;
+    width: 45px;
+    height: 45px;
+    cursor: pointer;
+    align-items: center;
+    justify-content: center;
+    margin: 5px;
+}
+
+.path {
+    width: unset !important;
+    padding: 0 5px;
+}
+
+.sep, .sep:hover {
+    background-color: unset !important;
+    cursor: unset !important;
+}
+
+.icon:hover {
+    background-color: #a6b5be;
+}
+
+.file-explorer-navbar-path {
+    width: 75%;
+    display: flex;
+    flex-flow: row;
+}
+
+.file-explorer-navbar-path-segment {
+    display: flex;
+    flex-flow: row;
+}

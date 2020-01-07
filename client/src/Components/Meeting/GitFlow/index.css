@@ -1,0 +1,51 @@
+.explorer, .git-flow {
+    overflow-y: scroll;
+    height: calc(100vh - 233px);
+}
+
+.git-flow {
+    overflow: hidden;
+    top: 0;
+    left: 0;
+}
+
+.draggable {
+    cursor: grab;
+}
+
+.draggable:active:hover {
+    cursor: grabbing;
+}
+
+.git-flow-loader {
+    z-index: 10000;
+    position: fixed;
+    left: 50vw;
+    top: 50vh;
+    transform: translate(-50%, -50%);
+
+    display: flex;
+    flex-flow: column nowrap;
+    justify-content: center;
+    align-items: center;
+}
+
+.loading-title {
+    color: #4A00E0;
+}
+
+.toggleExplorer {
+    z-index: 9999;
+    color: white;
+    cursor: pointer;
+    height: 60px;
+    width: 60px;
+    border-radius: 30px;
+    background-color: #4a00e0;
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+    font-size: 2rem;
+    vertical-align: center;
+    text-align: center;
+}

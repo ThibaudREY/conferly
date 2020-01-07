@@ -18,32 +18,32 @@
     min-height: 220px;
 }
 
-.files {
+.dropzone-files {
     max-height: 150px;
     overflow-x: hidden;
     overflow-y: scroll;
     max-width: calc(100% - 13px) !important;
 }
 
-.files .file {
+.dropzone-files .dropzone-file {
     padding: 5px;
     max-width: calc(100% - 15px);
 }
 
-.files .file:hover {
+.dropzone-files .dropzone-file:hover {
     background-color: #e9eaea;
 }
 
-.files::-webkit-scrollbar {
+.dropzone-files::-webkit-scrollbar {
     width: 6px;
     background-color: #F5F5F5;
 }
 
-.files::-webkit-scrollbar-thumb {
+.dropzone-files::-webkit-scrollbar-thumb {
     background-color: rgb(74, 0, 224);;
 }
 
-.files::-webkit-scrollbar-track {
+.dropzone-files::-webkit-scrollbar-track {
     -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
     background-color: #F5F5F5;
 }
