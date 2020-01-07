@@ -90,11 +90,11 @@ export default class FileDrop extends Component<FileDropProps, FileDropState> {
                     )}
                 </Dropzone>
                 <div className="row ml-0">
-                    <ul className="col-12 list-unstyled files p-0 mb-0">
+                    <ul className="col-12 list-unstyled dropzone-files p-0 mb-0">
                         {
                             files.map((file: File) => {
                                 const extension = file.name.split('.').pop();
-                                return (<li key={file.name} className='file'>
+                                return (<li key={file.name} className='dropzone-file'>
                                     <FileIcon extension={extension} {...defaultStyles.docx} size={30}/> {file.name} - {(file.size / 1024).toFixed(2)}kb
                                     <MdClose className='remove-file' onClick={() => this.deleteFile(file)}/>
                                 </li>)
