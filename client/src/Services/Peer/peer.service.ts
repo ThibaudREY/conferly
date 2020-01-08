@@ -75,7 +75,8 @@ export default class PeerService {
             this.server.on('connect', () => {
                 error.next({ show: false, message: '', acknowledgable: false })
             });
-            this.server.on('server-error', (message: string) => {
+            this.server.on('server-error', async (message: string) => {
+                this.streamManagerService.stopMediaStream(await this.streamManagerService.getCurrentPeerMediaStream());
                 setTimeout(() => error.next({ message: message, show: true, acknowledgable: false }));
             });
             this.server.on('leaving', (peerId: string) => this.onLeaving(peerId));
