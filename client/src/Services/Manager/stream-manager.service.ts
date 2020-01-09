@@ -78,6 +78,10 @@ export default class StreamManagerService {
             try {
                 const screen = (await (navigator.mediaDevices as any).getDisplayMedia({ video: true, audio: true }) as MediaStream);
 
+                if (screen.getVideoTracks()[0]) {
+                    screen.getVideoTracks()[0].addEventListener('ended', () => this.switchCamera(false));
+                }
+
                 peers.value.forEach(async (peer: { instance: any, user: User }) => {
 
                     try {
