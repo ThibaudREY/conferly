@@ -7,6 +7,7 @@ interface VideoChatBubbleProps {
     stream: Promise<MediaStream>
     className?: string
     index: number
+    muted: boolean
 }
 
 interface VideoChatBubbleState {
@@ -51,7 +52,7 @@ export default class VideoChatBubble extends React.Component<VideoChatBubbleProp
         const { fullscreen } = this.state;
 
         const video = <Video ref={this.videoRef} className={fullscreen ? 'video-fullscreen' : 'bubble-video'} stream={stream}
-            key="small" id={fullscreen ? '' : 'small' + index} />;
+            key="small" id={fullscreen ? '' : 'small' + index} muted={this.props.muted}/>;
 
         return (
 
