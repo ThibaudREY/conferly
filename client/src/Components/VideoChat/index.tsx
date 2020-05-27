@@ -106,7 +106,7 @@ export default class VideoChat extends React.Component<VideoChatProps, VideoChat
                         <MdStopScreenShare/> : <MdScreenShare/>} </div>
                 </div>
                 {
-                    this.props.streams.concat([self]).map((stream: Promise<MediaStream>, index: number) => <VideoChatBubble index={index}
+                    this.props.streams.concat([self]).map((stream: Promise<MediaStream>, index: number) => <VideoChatBubble muted={index===0} index={index}
                                                                                                   stream={stream}
                                                                                                   key={index}/>)
                 }
