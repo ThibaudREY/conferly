@@ -51,7 +51,7 @@
     "loaders.css": "^0.1.2",
     "lz-string": "^1.4.4",
     "moment": "^2.24.0",
-    "node-sass": "^4.12.0",
+    "node-sass": "^4.13.1",
     "popper.js": "^1.14.7",
     "prismjs": "^1.17.1",
     "prop-types": "^15.6.2",
