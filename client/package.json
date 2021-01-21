@@ -83,7 +83,7 @@
     "sass-loader": "^8.0.0",
     "shortid": "^2.2.15",
     "simple-peer": "^9.6.0",
-    "socket.io": "^2.3.0",
+    "socket.io": "^2.4.0",
     "socket.io-client": "latest",
     "tslib": "^1.9.3",
     "typescript": "3.6.3",
