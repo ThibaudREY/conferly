@@ -17,7 +17,7 @@
     "@types/simple-peer": "^6.1.6",
     "@types/socket.io": "^2.1.2",
     "cors": "^2.8.5",
-    "express": "^4.17.1",
+    "express": "^4.17.3",
     "pino": "^5.13.4",
     "reflect-metadata": "^0.1.13",
     "simple-peer": "^9.6.0",
